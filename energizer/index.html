@@ -108,9 +108,18 @@
     }
   </style>
 <script>
-function closeCookieModal() {
-    document.getElementById('cookie-overlay').remove();
+function closeCookieModal(e) {
+    if(e) e.preventDefault();
+    const overlay = document.getElementById('cookie-overlay');
+    if(overlay) overlay.remove();
+    localStorage.setItem('cookie_accepted', 'true');
 }
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('cookie_accepted') === 'true') {
+        const overlay = document.getElementById('cookie-overlay');
+        if(overlay) overlay.remove();
+    }
+});
 </script></head>
 <body class="bg-background text-on-background antialiased">
 <!-- Cookie Pre-sell Modal Overlay -->
@@ -121,10 +130,10 @@ function closeCookieModal() {
 <h3 class="font-h3 text-h3 text-primary">Experience Optimization</h3>
 <p class="font-body-md text-body-md text-on-surface-variant">We use cookies to enhance your experience. Do you accept?</p>
 <div class="flex flex-col gap-4 mt-6">
-<a class="w-full bg-tertiary-fixed text-primary py-4 font-label-caps text-label-caps tracking-widest hover:bg-tertiary-fixed-dim transition-colors text-center border-b-2 border-tertiary-container" href="https://hopewaves.vercel.app/energizer/" onclick="closeCookieModal()">
+<a class="w-full bg-tertiary-fixed text-primary py-4 font-label-caps text-label-caps tracking-widest hover:bg-tertiary-fixed-dim transition-colors text-center border-b-2 border-tertiary-container" href="#" onclick="closeCookieModal(event)">
                         Accept
                     </a>
-<a class="w-full bg-surface-container-high text-on-surface-variant py-4 font-label-caps text-label-caps tracking-widest hover:bg-surface-container-highest transition-colors text-center" href="https://hopewaves.vercel.app/energizer/" onclick="closeCookieModal()">
+<a class="w-full bg-surface-container-high text-on-surface-variant py-4 font-label-caps text-label-caps tracking-widest hover:bg-surface-container-highest transition-colors text-center" href="#" onclick="closeCookieModal(event)">
                         Reject
                     </a>
 </div>

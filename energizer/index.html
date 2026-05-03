@@ -317,14 +317,22 @@ document.addEventListener('DOMContentLoaded', () => {
 <a class="text-primary underline hover:text-primary-container transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
 </div>
 </footer>
-<!-- Cookie Consent Overlay -->
-<div id="cookie-overlay" class="fixed bottom-0 left-0 w-full z-[100] p-4 bg-primary/80 backdrop-blur-md border-t border-primary-fixed/20 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] flex flex-col sm:flex-row items-center justify-between gap-4">
-<p class="font-body-md text-on-primary text-sm max-w-3xl">
-            We use cookies to ensure you get the best experience on our website and to provide access to exclusive pre-sale information regarding The Ultimate Energizer Guide.
-        </p>
-<div class="flex gap-2 shrink-0">
-<a class="px-4 py-2 text-sm font-label-caps text-on-primary border border-on-primary/30 rounded hover:bg-on-primary/10 transition-colors uppercase" href="#" onclick="closeCookieModal(event)">Reject</a>
-<a class="px-4 py-2 text-sm font-label-caps bg-on-tertiary-container text-primary rounded hover:bg-on-tertiary-container/90 transition-colors uppercase font-bold" href="#" onclick="closeCookieModal(event)">Accept</a>
+<!-- Cookie Pre-sell Modal Overlay -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-primary/80 backdrop-blur-md p-6" id="cookie-overlay">
+<div class="bg-surface-container-lowest max-w-md w-full p-8 shadow-2xl border border-outline-variant">
+<div class="flex flex-col gap-stack-sm text-center">
+<span class="material-symbols-outlined text-secondary text-5xl mb-2" data-icon="cookie">cookie</span>
+<h3 class="font-h3 text-h3 text-primary">Experience Optimization</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">We use cookies to enhance your experience. Do you accept?</p>
+<div class="flex flex-col gap-4 mt-6">
+<a class="w-full bg-tertiary-fixed text-primary py-4 font-label-caps text-label-caps tracking-widest hover:bg-tertiary-fixed-dim transition-colors text-center border-b-2 border-tertiary-container" href="#" onclick="closeCookieModal(event)">
+                        Accept
+                    </a>
+<a class="w-full bg-surface-container-high text-on-surface-variant py-4 font-label-caps text-label-caps tracking-widest hover:bg-surface-container-highest transition-colors text-center" href="#" onclick="closeCookieModal(event)">
+                        Reject
+                    </a>
+</div>
+</div>
 </div>
 </div>
 <script src="/js/seo-injector.js"></script>

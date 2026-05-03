@@ -47,13 +47,29 @@ export default function handler(req, res) {
       }
     },
     '/energizer/': {
-      title: 'Energizer VIP - Hopewaves Networking',
-      description: 'Potencialize seus resultados com a parceria exclusiva Energizer e Hopewaves. Aumente suas conversões de forma orgânica e acelerada.',
+      title: 'The Ultimate Energizer Guide | Power Liberty',
+      description: 'Discover how to slash your power bill with The Ultimate Energizer Guide. Build your own green energy generator and achieve true power liberty today.',
       schema: {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Energizer VIP Partner - Hopewaves",
-        "description": "Página oficial do parceiro Energizer na rede Hopewaves."
+        "@type": "Product",
+        "name": "The Ultimate Energizer Guide",
+        "description": "A comprehensive guide to building a compact, powerful green energy generator for your home.",
+        "brand": {
+          "@type": "Brand",
+          "name": "Power Liberty"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "49.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://hopewaves.vercel.app/energizer/"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "342"
+        }
       }
     }
   };

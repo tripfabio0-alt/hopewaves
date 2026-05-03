@@ -160,12 +160,6 @@ function closeCookieModal(e) {
     if(overlay) overlay.remove();
     localStorage.setItem('cookie_accepted', 'true');
 }
-document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('cookie_accepted') === 'true') {
-        const overlay = document.getElementById('cookie-overlay');
-        if(overlay) overlay.remove();
-    }
-});
 </script>
   </head>
 <body class="bg-background text-on-background font-body-md antialiased pt-20 pb-32 md:pb-0">
@@ -334,5 +328,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 </div>
 </div>
+<script>
+    if (localStorage.getItem('cookie_accepted') === 'true') {
+        const overlay = document.getElementById('cookie-overlay');
+        if(overlay) overlay.remove();
+    }
+</script>
 <script src="/js/seo-injector.js"></script>
 </body></html>

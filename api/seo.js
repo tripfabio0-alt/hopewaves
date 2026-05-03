@@ -25,7 +25,7 @@ export default function handler(req, res) {
         "description": "Rede Premium de Afiliados focada em resultados e conversão."
       }
     },
-    '/affiliate/exemplo/': {
+    '/exemplo/': {
       title: 'Oferta Exclusiva - Hopewaves Afiliado parceiro',
       description: 'Descubra a oportunidade única com o parceiro Exemplo da Hopewaves. Transforme seu networking em resultados concretos hoje.',
       schema: {
@@ -44,6 +44,16 @@ export default function handler(req, res) {
           "ratingValue": "4.9",
           "reviewCount": "154"
         }
+      }
+    },
+    '/Energizer/': {
+      title: 'Energizer VIP - Hopewaves Networking',
+      description: 'Potencialize seus resultados com a parceria exclusiva Energizer e Hopewaves. Aumente suas conversões de forma orgânica e acelerada.',
+      schema: {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Energizer VIP Partner - Hopewaves",
+        "description": "Página oficial do parceiro Energizer na rede Hopewaves."
       }
     }
   };

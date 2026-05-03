@@ -46,7 +46,7 @@ export default function handler(req, res) {
         }
       }
     },
-    '/Energizer/': {
+    '/energizer/': {
       title: 'Energizer VIP - Hopewaves Networking',
       description: 'Potencialize seus resultados com a parceria exclusiva Energizer e Hopewaves. Aumente suas conversões de forma orgânica e acelerada.',
       schema: {

@@ -1,294 +1,228 @@
 /**
- * Hopewaves Market Data Engine v2.1
+ * Hopewaves Market Data Engine v3.0
  * ----------------------------------
- * Crypto:  Binance REST API         → free, no key, CORS-friendly
- * Forex:   Frankfurter.app          → free, no key, CORS-friendly
- * Ações:   Yahoo Finance via /api/quotes (Vercel proxy, ~15min delay)
+ * Crypto:  Binance REST API         → free, no key, real-time
+ * Forex:   Frankfurter.app          → free, no key, fim do dia
+ * Ações:   /api/quotes (proxy brapi.dev) → free, B3 real + índices
  *
- * Atualiza a cada 30 segundos automaticamente.
+ * Fallback: simulação com valores base atualizados (Mai/2026)
  */
 
 const MarketData = (() => {
 
     // ─── CONFIGURAÇÃO ───────────────────────────────────────────────────────
-    const REFRESH_INTERVAL  = 30000; // 30 segundos (crypto + forex)
-    const STOCKS_INTERVAL   = 60000; // 60 segundos (ações, dado com delay)
+    const CRYPTO_REFRESH = 30000;  // 30s
+    const FOREX_REFRESH  = 60000;  // 60s
+    const STOCK_REFRESH  = 60000;  // 60s
+    const SIM_TICK       = 3000;   // 3s — animação do ticker
+
     const BINANCE_BASE = 'https://api.binance.com/api/v3';
     const FOREX_BASE   = 'https://api.frankfurter.app';
 
-    // Mapeamento: símbolo Yahoo → label no ticker do DOM
-    const STOCK_SYMBOLS = {
-        'PETR4.SA': 'PETR4',
-        'VALE3.SA':  'VALE3',
-        'ITUB4.SA':  'ITUB4',
-        'BBDC4.SA':  'BBDC4',
-        'WEGE3.SA':  'WEGE3',
-        'MGLU3.SA':  'MGLU3',
-        '^BVSP':     'IBOV',
-        '^GSPC':     'S&P 500',
-        '^NDX':      'NDX',
-        '^DJI':      'US30',
-        '^VIX':      'VIX',
-        'GC=F':      'OURO',
-        'CL=F':      'PETRÓLEO',
-    };
+    // Cache de preços anteriores (para sinal up/down)
+    const prev = {};
 
-    // Mapeamento símbolo → elemento no DOM  [data-symbol="BTC"]
-    const CRYPTO_SYMBOLS = {
+    // Mapeamento: símbolo Binance → label do ticker
+    const CRYPTO_MAP = {
         'BTCUSDT':  'BTC/USD',
         'ETHUSDT':  'ETH/USD',
         'SOLUSDT':  'SOL/USD',
         'BNBUSDT':  'BNB/USD',
         'XRPUSDT':  'XRP/USD',
         'DOGEUSDT': 'DOGE/USD',
-        'LINKUSDT': 'LINK/USD',
     };
 
-    // Pares forex que queremos (base USD)
-    const FOREX_PAIRS = {
-        'EUR': 'EUR/USD', // precisa inverter (EUR/USD = 1/USD per EUR)
-        'GBP': 'GBP/USD',
-        'JPY': 'USD/JPY', // USD/JPY = direto
-        'AUD': 'AUD/USD',
-        'CHF': 'USD/CHF', // inverso
+    // Valores base atualizados Mai/2026 (usados como seed do fallback)
+    const STOCK_BASES = {
+        'IBOV':    186753,
+        'WIN$':    186680,
+        'WDO$':    5785,
+        'PETR4':   36.80,
+        'VALE3':   55.40,
+        'ITUB4':   36.20,
+        'BBDC4':   13.90,
+        'WEGE3':   47.20,
+        'MGLU3':   1.92,
+        'S&P 500': 5600,
+        'NDX':     19800,
+        'US30':    42100,
+        'VIX':     16.40,
+        'OURO':    3300,
+        'PETRÓLEO': 82.50,
     };
 
-    // Cache para exibir variação percentual
-    const prevPrices = {};
+    const FOREX_BASES = {
+        'EUR/USD': 1.1320,
+        'GBP/USD': 1.3280,
+        'USD/JPY': 144.50,
+        'AUD/USD': 0.6480,
+        'USD/CHF': 0.8850,
+        'EUR/JPY': 163.50,
+        'GBP/JPY': 191.90,
+    };
+
+    const CRYPTO_BASES = {
+        'BTC/USD':  97500,
+        'ETH/USD':  1840,
+        'SOL/USD':  148,
+        'BNB/USD':  600,
+        'XRP/USD':  2.24,
+        'DOGE/USD': 0.192,
+    };
 
     // ─── UTILITÁRIOS ────────────────────────────────────────────────────────
-    function formatPrice(symbol, price) {
-        if (['BTCUSDT'].includes(symbol)) return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (['ETHUSDT', 'SOLUSDT', 'BNBUSDT'].includes(symbol)) return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (price >= 100) return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        if (price < 1) return price.toFixed(4);
+    function fmt(price) {
+        if (price >= 100000) return price.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+        if (price >= 1000)   return price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (price >= 10)     return price.toFixed(2);
+        if (price >= 1)      return price.toFixed(3);
         return price.toFixed(4);
     }
 
-    function updateTicker(label, price, displayValue) {
-        // Atualiza elementos .live-value no ticker bar e em cards
-        document.querySelectorAll('.live-value').forEach(el => {
-            const parentText = el.closest('.ticker-item')?.querySelector('strong')?.textContent?.trim();
-            if (parentText === label) {
-                const prev = prevPrices[label];
-                const isUp = prev === undefined || price >= prev;
-                el.textContent = displayValue;
-                el.className = 'live-value ' + (isUp ? 'up' : 'down');
-                // Efeito flash ao atualizar
-                el.style.transition = 'color 0.3s';
-                el.style.color = isUp ? 'var(--profit)' : 'var(--loss)';
-                setTimeout(() => { el.style.color = ''; }, 800);
-                prevPrices[label] = price;
-            }
+    function push(label, price, display) {
+        // 1. Ticker bar
+        document.querySelectorAll('.ticker-item').forEach(item => {
+            const strong = item.querySelector('strong');
+            if (!strong || strong.textContent.trim() !== label) return;
+            const span = item.querySelector('.live-value');
+            if (!span) return;
+            const wasUp = prev[label] === undefined || price >= prev[label];
+            span.textContent = display;
+            span.classList.toggle('up', wasUp);
+            span.classList.toggle('down', !wasUp);
+            // flash
+            span.style.opacity = '0.4';
+            requestAnimationFrame(() => { span.style.transition = 'opacity 0.4s'; span.style.opacity = '1'; });
         });
 
-        // Atualiza também signal cards e stat-numbers com data-symbol
+        // 2. Elementos com data-live="LABEL"
         document.querySelectorAll(`[data-live="${label}"]`).forEach(el => {
-            el.textContent = displayValue;
+            el.textContent = display;
         });
+
+        prev[label] = price;
     }
 
-    function updateStatus(ok) {
-        const badge = document.querySelector('.hero-live-badge');
-        if (!badge) return;
-        if (ok) {
-            badge.style.background = '';
-            const dot = badge.querySelector('.pulse-dot');
-            if (dot) dot.style.background = 'var(--profit)';
-        }
+    function tick(price, base, factor = 0.001) {
+        const p = prev[base] !== undefined ? prev[base] : (STOCK_BASES[base] || CRYPTO_BASES[base] || FOREX_BASES[base] || price);
+        return p + (Math.random() - 0.495) * factor * p;
     }
 
     // ─── FETCH CRIPTO (BINANCE) ─────────────────────────────────────────────
     async function fetchCrypto() {
         try {
-            const symbols = Object.keys(CRYPTO_SYMBOLS);
-            const query   = symbols.map(s => `"${s}"`).join(',');
-            const url     = `${BINANCE_BASE}/ticker/price?symbols=[${query}]`;
-            const res     = await fetch(url, { signal: AbortSignal.timeout(8000) });
-            if (!res.ok) throw new Error('Binance ' + res.status);
-            const data = await res.json();
-
-            data.forEach(item => {
-                const label = CRYPTO_SYMBOLS[item.symbol];
+            const keys  = Object.keys(CRYPTO_MAP);
+            const url   = `${BINANCE_BASE}/ticker/price?symbols=[${keys.map(s => `"${s}"`).join(',')}]`;
+            const r     = await fetch(url, { signal: AbortSignal.timeout(7000) });
+            const data  = await r.json();
+            data.forEach(({ symbol, price }) => {
+                const label = CRYPTO_MAP[symbol];
                 if (!label) return;
-                const price = parseFloat(item.price);
-                const display = formatPrice(item.symbol, price);
-                updateTicker(label, price, display);
+                const p = parseFloat(price);
+                push(label, p, fmt(p));
             });
-
-            updateStatus(true);
-            console.log('[MarketData] Crypto atualizado ✓', new Date().toLocaleTimeString('pt-BR'));
-        } catch (err) {
-            console.warn('[MarketData] Crypto falhou, usando dados simulados:', err.message);
-            simulateCrypto();
+            console.log('[Market] Crypto ✓', new Date().toLocaleTimeString('pt-BR'));
+        } catch {
+            Object.entries(CRYPTO_BASES).forEach(([label]) => {
+                const p = Math.abs(tick(null, label, 0.002));
+                push(label, p, fmt(p));
+            });
         }
     }
 
     // ─── FETCH FOREX (FRANKFURTER) ──────────────────────────────────────────
     async function fetchForex() {
         try {
-            // Frankfurter retorna taxas em relação ao EUR por padrão
-            // Buscamos USD como base, convertemos para os pares que precisamos
-            const url = `${FOREX_BASE}/latest?from=USD&to=EUR,GBP,JPY,AUD,CHF`;
-            const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-            if (!res.ok) throw new Error('Frankfurter ' + res.status);
-            const data = await res.json();
-            const rates = data.rates; // taxas de 1 USD → outras moedas
+            const r    = await fetch(`${FOREX_BASE}/latest?from=USD&to=EUR,GBP,JPY,AUD,CHF`, { signal: AbortSignal.timeout(7000) });
+            const data = await r.json();
+            const rt   = data.rates;
 
-            // EUR/USD = 1 / (USD por EUR) = rates.EUR invertido
-            const eurUsd = parseFloat((1 / rates.EUR).toFixed(5));
-            updateTicker('EUR/USD', eurUsd, eurUsd.toFixed(4));
-
-            // GBP/USD = 1 / rates.GBP
-            const gbpUsd = parseFloat((1 / rates.GBP).toFixed(5));
-            updateTicker('GBP/USD', gbpUsd, gbpUsd.toFixed(4));
-
-            // USD/JPY = rates.JPY (USD compra x JPY)
-            const usdJpy = parseFloat(rates.JPY.toFixed(3));
-            updateTicker('USD/JPY', usdJpy, usdJpy.toFixed(2));
-
-            // AUD/USD = 1 / rates.AUD
-            const audUsd = parseFloat((1 / rates.AUD).toFixed(5));
-            updateTicker('AUD/USD', audUsd, audUsd.toFixed(4));
-
-            // USD/CHF = rates.CHF
-            const usdChf = parseFloat(rates.CHF.toFixed(5));
-            updateTicker('USD/CHF', usdChf, usdChf.toFixed(4));
-
-            // EUR/JPY = EUR/USD * USD/JPY
-            const eurJpy = parseFloat((eurUsd * usdJpy).toFixed(3));
-            updateTicker('EUR/JPY', eurJpy, eurJpy.toFixed(2));
-
-            // GBP/JPY = GBP/USD * USD/JPY
-            const gbpJpy = parseFloat((gbpUsd * usdJpy).toFixed(3));
-            updateTicker('GBP/JPY', gbpJpy, gbpJpy.toFixed(2));
-
-            console.log('[MarketData] Forex atualizado ✓', new Date().toLocaleTimeString('pt-BR'));
-        } catch (err) {
-            console.warn('[MarketData] Forex falhou, usando simulação:', err.message);
+            const pairs = {
+                'EUR/USD': 1 / rt.EUR,
+                'GBP/USD': 1 / rt.GBP,
+                'USD/JPY': rt.JPY,
+                'AUD/USD': 1 / rt.AUD,
+                'USD/CHF': rt.CHF,
+                'EUR/JPY': (1 / rt.EUR) * rt.JPY,
+                'GBP/JPY': (1 / rt.GBP) * rt.JPY,
+            };
+            Object.entries(pairs).forEach(([label, p]) => push(label, p, fmt(p)));
+            console.log('[Market] Forex ✓', new Date().toLocaleTimeString('pt-BR'));
+        } catch {
             simulateForex();
         }
     }
 
-    // ─── SIMULAÇÃO (FALLBACK) ────────────────────────────────────────────────
-    // Usado quando as APIs falham. Aplica variância aleatória sobre último valor conhecido.
-    function simulateCrypto() {
-        const bases = { 'BTC/USD': 64230, 'ETH/USD': 3120, 'SOL/USD': 148, 'BNB/USD': 590, 'XRP/USD': 0.52, 'DOGE/USD': 0.16, 'LINK/USD': 14.3 };
-        Object.entries(bases).forEach(([label, base]) => {
-            const prev   = prevPrices[label] || base;
-            const change = (Math.random() - 0.49) * 0.002 * prev; // ±0.2%
-            const price  = Math.max(prev + change, base * 0.95);
-            const display = price >= 100
-                ? price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                : price.toFixed(4);
-            updateTicker(label, price, display);
-        });
-    }
-
-    function simulateForex() {
-        const bases = { 'EUR/USD': 1.0850, 'GBP/USD': 1.2642, 'USD/JPY': 151.30, 'AUD/USD': 0.6570, 'USD/CHF': 0.9050, 'EUR/JPY': 164.10, 'GBP/JPY': 191.30 };
-        Object.entries(bases).forEach(([label, base]) => {
-            const prev   = prevPrices[label] || base;
-            const change = (Math.random() - 0.49) * 0.0003 * prev; // ±0.03%
-            const price  = prev + change;
-            updateTicker(label, price, price.toFixed(4));
-        });
-    }
-
-    // ─── FETCH AÇÕES E ÍNDICES (YAHOO FINANCE VIA PROXY) ───────────────────
+    // ─── FETCH AÇÕES/ÍNDICES (PROXY /api/quotes) ───────────────────────────
     async function fetchStocks() {
         try {
-            const symbols = Object.keys(STOCK_SYMBOLS).join(',');
-            const res = await fetch(`/api/quotes?symbols=${encodeURIComponent(symbols)}`, {
-                signal: AbortSignal.timeout(12000),
+            const r    = await fetch('/api/quotes', { signal: AbortSignal.timeout(10000) });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const data = await r.json();
+            if (!data.ok || !data.quotes?.length) throw new Error('sem dados');
+
+            data.quotes.forEach(({ label, price }) => {
+                if (label && price != null) push(label, price, fmt(price));
             });
-            if (!res.ok) throw new Error('Proxy HTTP ' + res.status);
-            const data = await res.json();
-            if (!data.ok || !data.quotes?.length) throw new Error('Sem dados');
-
-            data.quotes.forEach(q => {
-                const label = STOCK_SYMBOLS[q.symbol];
-                if (!label || q.price == null) return;
-                const price = parseFloat(q.price);
-
-                // Formatação por tipo de ativo
-                let display;
-                if (price >= 10000)  display = price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-                else if (price >= 100) display = price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                else if (price >= 1)   display = price.toFixed(2);
-                else                   display = price.toFixed(4);
-
-                updateTicker(label, price, display);
-            });
-
-            // Adiciona indicador de delay
-            const ts = document.getElementById('stocks-delay-note');
-            if (ts) ts.textContent = '⏱ Ações com 15min de atraso (padrão B3/NYSE)';
-
-            console.log('[MarketData] Ações Yahoo Finance atualizado ✓', new Date().toLocaleTimeString('pt-BR'));
-        } catch (err) {
-            console.warn('[MarketData] Ações falhou, simulando:', err.message);
+            console.log('[Market] Ações ✓', new Date().toLocaleTimeString('pt-BR'));
+        } catch (e) {
+            console.warn('[Market] Ações falhou, simulando:', e.message);
             simulateStocks();
         }
     }
 
-    // ─── SIMULAÇÃO FALLBACK (se Yahoo/proxy falhar) ──────────────────────────
-    function simulateStocks() {
-        const bases = {
-            'IBOV': 127450, 'PETR4': 38.42, 'VALE3': 62.30,
-            'ITUB4': 33.80, 'BBDC4': 14.50, 'WEGE3': 41.90,
-            'MGLU3': 2.18,  'WIN$': 124680, 'WDO$': 5148,
-            'US30': 39120,  'VIX': 13.20,   'OURO': 2320,
-            'S&P 500': 5120, 'NDX': 18150,  'PETRÓLEO': 78.40,
-        };
-        Object.entries(bases).forEach(([label, base]) => {
-            const prev   = prevPrices[label] || base;
-            const change = (Math.random() - 0.495) * 0.001 * prev;
-            const price  = Math.abs(prev + change);
-            let display;
-            if (price >= 10000) display = price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-            else if (price >= 100) display = price.toFixed(2);
-            else display = price.toFixed(2);
-            updateTicker(label, price, display);
+    // ─── SIMULAÇÕES FALLBACK ─────────────────────────────────────────────────
+    function simulateForex() {
+        Object.keys(FOREX_BASES).forEach(label => {
+            const p = tick(null, label, 0.0003);
+            push(label, p, fmt(p));
         });
     }
 
-    // ─── ATUALIZAÇÃO DO TIMESTAMP ────────────────────────────────────────────
-    function updateTimestamp() {
+    function simulateStocks() {
+        Object.keys(STOCK_BASES).forEach(label => {
+            const p = Math.abs(tick(null, label, 0.001));
+            push(label, p, fmt(p));
+        });
+    }
+
+    // Tick rápido só para WIN$/WDO$ (parecer vivo durante sessão)
+    function liveIndexTick() {
+        ['WIN$', 'WDO$'].forEach(label => {
+            const p = Math.abs(tick(null, label, 0.0008));
+            push(label, p, fmt(p));
+        });
+    }
+
+    // ─── TIMESTAMP ──────────────────────────────────────────────────────────
+    function stamp() {
         const el = document.getElementById('market-timestamp');
-        if (el) el.textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if (el) el.textContent = 'Atualizado ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // ─── CICLO PRINCIPAL ─────────────────────────────────────────────────────
-    async function refresh() {
-        // Crypto + Forex em paralelo (dados em tempo real, 30s)
-        await Promise.allSettled([fetchCrypto(), fetchForex()]);
-        updateTimestamp();
-    }
-
-    async function refreshStocks() {
-        // Ações via Yahoo Finance proxy (60s, dado com ~15min delay padrão de bolsa)
-        await fetchStocks();
-        // Ações simuladas no interim (WIN$, WDO$ que Yahoo não cobre bem)
-        simulateStocks();
-    }
-
+    // ─── INIT ────────────────────────────────────────────────────────────────
     function init() {
-        // Executa imediatamente ao carregar
-        refresh();
-        // Repete a cada 30s
-        setInterval(refresh, REFRESH_INTERVAL);
+        // Seed imediato com simulação (antes das APIs responderem)
+        simulateStocks();
+        simulateForex();
 
-        // Atualiza ações simuladas mais frequentemente (a cada 3s para parecer vivo)
-        setInterval(simulateStocks, 3000);
-        // Atualiza forex simulado a cada 5s (enquanto API não retorna)
-        setInterval(simulateForex, 5000);
+        // Busca dados reais
+        fetchCrypto();
+        fetchForex();
+        fetchStocks();
+
+        // Ciclos de atualização
+        setInterval(fetchCrypto,    CRYPTO_REFRESH);
+        setInterval(fetchForex,     FOREX_REFRESH);
+        setInterval(fetchStocks,    STOCK_REFRESH);
+        setInterval(liveIndexTick,  SIM_TICK);
+        setInterval(stamp,          10000);
+        stamp();
     }
 
-    return { init, refresh };
+    return { init };
 })();
 
-// Auto-inicia quando o DOM estiver pronto
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', MarketData.init);
 } else {

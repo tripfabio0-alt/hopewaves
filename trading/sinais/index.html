@@ -87,7 +87,8 @@
             <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
             <div class="ticker-item"><strong>WIN$</strong> <span class="live-value down" data-base="124680" data-pct="false">124.680</span></div>
             <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
-        </div>
+        <span id="market-timestamp" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:0.7rem;color:rgba(255,255,255,0.3);white-space:nowrap;"></span>
+    </div>
     </div>
 
     <nav class="glass-nav">
@@ -378,6 +379,7 @@
     </footer>
 
     <script src="../js/main.js"></script>
+    <script src="../js/market-data.js"></script>
     <script src="../js/trading.js"></script>
     <script>
         function filterSignals(cat) {

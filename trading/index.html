@@ -34,7 +34,8 @@
             <div class="ticker-item"><strong>S&P 500</strong> <span class="live-value up" data-base="5120.00" data-pct="false">5.120,00</span></div>
             <div class="ticker-item"><strong>NDX</strong> <span class="live-value up" data-base="18150.00" data-pct="false">18.150,00</span></div>
             <div class="ticker-item"><strong>VIX</strong> <span class="live-value down" data-base="13.20" data-pct="false">13,20</span></div>
-        </div>
+        <span id="market-timestamp" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:0.7rem;color:rgba(255,255,255,0.3);white-space:nowrap;"></span>
+    </div>
     </div>
 
     <nav class="glass-nav">
@@ -367,6 +368,7 @@
     </footer>
 
     <script src="../js/main.js"></script>
+    <script src="js/market-data.js"></script>
     <script src="js/trading.js"></script>
     <script>
         function handleWaitlist(e) {

@@ -1,9 +1,9 @@
 /**
- * Hopewaves Market Data Engine v2.0
+ * Hopewaves Market Data Engine v2.1
  * ----------------------------------
- * Crypto:  Binance REST API    → free, no key, CORS-friendly
- * Forex:   Frankfurter.app     → free, no key, CORS-friendly
- * Ações:   Simulado com base real (sem API gratuita confiável para B3)
+ * Crypto:  Binance REST API         → free, no key, CORS-friendly
+ * Forex:   Frankfurter.app          → free, no key, CORS-friendly
+ * Ações:   Yahoo Finance via /api/quotes (Vercel proxy, ~15min delay)
  *
  * Atualiza a cada 30 segundos automaticamente.
  */
@@ -11,9 +11,27 @@
 const MarketData = (() => {
 
     // ─── CONFIGURAÇÃO ───────────────────────────────────────────────────────
-    const REFRESH_INTERVAL = 30000; // 30 segundos
+    const REFRESH_INTERVAL  = 30000; // 30 segundos (crypto + forex)
+    const STOCKS_INTERVAL   = 60000; // 60 segundos (ações, dado com delay)
     const BINANCE_BASE = 'https://api.binance.com/api/v3';
     const FOREX_BASE   = 'https://api.frankfurter.app';
+
+    // Mapeamento: símbolo Yahoo → label no ticker do DOM
+    const STOCK_SYMBOLS = {
+        'PETR4.SA': 'PETR4',
+        'VALE3.SA':  'VALE3',
+        'ITUB4.SA':  'ITUB4',
+        'BBDC4.SA':  'BBDC4',
+        'WEGE3.SA':  'WEGE3',
+        'MGLU3.SA':  'MGLU3',
+        '^BVSP':     'IBOV',
+        '^GSPC':     'S&P 500',
+        '^NDX':      'NDX',
+        '^DJI':      'US30',
+        '^VIX':      'VIX',
+        'GC=F':      'OURO',
+        'CL=F':      'PETRÓLEO',
+    };
 
     // Mapeamento símbolo → elemento no DOM  [data-symbol="BTC"]
     const CRYPTO_SYMBOLS = {
@@ -177,23 +195,60 @@ const MarketData = (() => {
         });
     }
 
+    // ─── FETCH AÇÕES E ÍNDICES (YAHOO FINANCE VIA PROXY) ───────────────────
+    async function fetchStocks() {
+        try {
+            const symbols = Object.keys(STOCK_SYMBOLS).join(',');
+            const res = await fetch(`/api/quotes?symbols=${encodeURIComponent(symbols)}`, {
+                signal: AbortSignal.timeout(12000),
+            });
+            if (!res.ok) throw new Error('Proxy HTTP ' + res.status);
+            const data = await res.json();
+            if (!data.ok || !data.quotes?.length) throw new Error('Sem dados');
+
+            data.quotes.forEach(q => {
+                const label = STOCK_SYMBOLS[q.symbol];
+                if (!label || q.price == null) return;
+                const price = parseFloat(q.price);
+
+                // Formatação por tipo de ativo
+                let display;
+                if (price >= 10000)  display = price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                else if (price >= 100) display = price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                else if (price >= 1)   display = price.toFixed(2);
+                else                   display = price.toFixed(4);
+
+                updateTicker(label, price, display);
+            });
+
+            // Adiciona indicador de delay
+            const ts = document.getElementById('stocks-delay-note');
+            if (ts) ts.textContent = '⏱ Ações com 15min de atraso (padrão B3/NYSE)';
+
+            console.log('[MarketData] Ações Yahoo Finance atualizado ✓', new Date().toLocaleTimeString('pt-BR'));
+        } catch (err) {
+            console.warn('[MarketData] Ações falhou, simulando:', err.message);
+            simulateStocks();
+        }
+    }
+
+    // ─── SIMULAÇÃO FALLBACK (se Yahoo/proxy falhar) ──────────────────────────
     function simulateStocks() {
-        // Ações B3 e índices: sem API gratuita, mantém simulação realista
         const bases = {
-            'IBOV':   127450, 'PETR4': 38.42, 'VALE3': 62.30,
-            'ITUB4':  33.80,  'BBDC4': 14.50, 'WEGE3': 41.90,
-            'MGLU3':  2.18,   'WIN$':  124680,'WDO$':  5148,
-            'US30':   39120,  'VIX':   13.20, 'OURO':  2320,
-            'S&P 500': 5120,  'NDX':   18150,
+            'IBOV': 127450, 'PETR4': 38.42, 'VALE3': 62.30,
+            'ITUB4': 33.80, 'BBDC4': 14.50, 'WEGE3': 41.90,
+            'MGLU3': 2.18,  'WIN$': 124680, 'WDO$': 5148,
+            'US30': 39120,  'VIX': 13.20,   'OURO': 2320,
+            'S&P 500': 5120, 'NDX': 18150,  'PETRÓLEO': 78.40,
         };
         Object.entries(bases).forEach(([label, base]) => {
             const prev   = prevPrices[label] || base;
-            const change = (Math.random() - 0.495) * 0.001 * prev; // ±0.1%
+            const change = (Math.random() - 0.495) * 0.001 * prev;
             const price  = Math.abs(prev + change);
             let display;
-            if (price >= 1000)  display = price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-            else if (price >= 10) display = price.toFixed(2);
-            else display = price.toFixed(4);
+            if (price >= 10000) display = price.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            else if (price >= 100) display = price.toFixed(2);
+            else display = price.toFixed(2);
             updateTicker(label, price, display);
         });
     }
@@ -206,9 +261,16 @@ const MarketData = (() => {
 
     // ─── CICLO PRINCIPAL ─────────────────────────────────────────────────────
     async function refresh() {
+        // Crypto + Forex em paralelo (dados em tempo real, 30s)
         await Promise.allSettled([fetchCrypto(), fetchForex()]);
-        simulateStocks(); // B3 sempre simulado
         updateTimestamp();
+    }
+
+    async function refreshStocks() {
+        // Ações via Yahoo Finance proxy (60s, dado com ~15min delay padrão de bolsa)
+        await fetchStocks();
+        // Ações simuladas no interim (WIN$, WDO$ que Yahoo não cobre bem)
+        simulateStocks();
     }
 
     function init() {

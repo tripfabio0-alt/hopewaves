@@ -334,9 +334,47 @@
     margin-top: 4rem;
 }
 
+/* Hero centered variant — sub-pages without chart */
+.trading-hero-centered {
+    min-height: 80vh;
+    padding-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.trading-hero-centered .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 860px;
+}
+.trading-hero-centered h1 {
+    font-size: 3.6rem;
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+}
+.trading-hero-centered p {
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+.trading-hero-centered .hero-actions {
+    justify-content: center;
+}
+.trading-hero-centered .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 680px;
+    width: 100%;
+    margin-top: 2.5rem;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .trading-hero .container { grid-template-columns: 1fr; text-align: center; }
+    .trading-hero-centered .stats-grid { grid-template-columns: 1fr; max-width: 320px; }
+    .trading-hero-centered h1 { font-size: 2.6rem; }
     .section-title { font-size: 2.2rem; }
     .waitlist-form { flex-direction: column; }
     .signal-card { grid-template-columns: 1fr; text-align: center; gap: 0.6rem; }

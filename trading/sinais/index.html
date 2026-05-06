@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Sinais | Setups Diários de Forex, Cripto e Ações</title>
+    <meta name="description" content="Sinais de trading em tempo real para Forex, Cripto, Ações e Mini Índice. Setups com entry, stop loss e take profit. Baseados em price action, liquidez e volume profile.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/trading.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .filter-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(138,43,226,0.2);
+            border-color: rgba(138,43,226,0.5);
+            color: var(--accent);
+        }
+        .signal-full-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .signal-full-card:hover { border-color: rgba(0,242,254,0.25); transform: translateX(4px); }
+        .signal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .signal-body { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
+        .signal-levels { display: flex; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap; }
+        .level-box { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 0.5rem 1rem; text-align: center; }
+        .level-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .level-val { font-family: 'Outfit'; font-size: 1.1rem; font-weight: 800; }
+        .level-entry .level-val { color: var(--text-main); }
+        .level-sl .level-val { color: var(--loss); }
+        .level-tp .level-val { color: var(--profit); }
+        .signal-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem; }
+        .signal-stat { text-align: center; min-width: 90px; }
+        .signal-stat .rr { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .signal-stat .rr-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .status-open { color: var(--profit); }
+        .status-watch { color: #ffc832; }
+        .status-closed { color: var(--text-muted); }
+
+        .legend-bar { display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-muted); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .signals-section { margin-bottom: 3rem; }
+        .signals-section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--glass-border); }
+    </style>
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>EUR/USD</strong> <span class="live-value up" data-base="1.0850" data-pct="false">1.0850</span></div>
+            <div class="ticker-item"><strong>GBP/USD</strong> <span class="live-value down" data-base="1.2642" data-pct="false">1.2642</span></div>
+            <div class="ticker-item"><strong>USD/JPY</strong> <span class="live-value up" data-base="151.30" data-pct="false">151.30</span></div>
+            <div class="ticker-item"><strong>BTC/USD</strong> <span class="live-value up" data-base="64230" data-pct="false">64.230</span></div>
+            <div class="ticker-item"><strong>ETH/USD</strong> <span class="live-value down" data-base="3120.50" data-pct="false">3.120,50</span></div>
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>WIN$</strong> <span class="live-value down" data-base="124680" data-pct="false">124.680</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="../">Trading</a></li>
+                <li><a href="../ferramentas/">Ferramentas</a></li>
+                <li><a href="../forex/">Forex</a></li>
+                <li><a href="../cripto/">Cripto</a></li>
+                <li><a href="../acoes/">Ações</a></li>
+                <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section style="padding:6rem 0 2rem; text-align:center;">
+        <div class="container">
+            <div class="hero-live-badge animate-up" style="justify-content:center;display:inline-flex;"><span class="pulse-dot"></span>Sinais atualizados hoje</div>
+            <h1 class="animate-up" style="font-size:3.2rem;margin-top:1rem;">Painel de <span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Sinais</span></h1>
+            <p class="animate-up delay-1" style="color:var(--text-muted);max-width:600px;margin:0.8rem auto 0;">Setups em tempo real baseados em price action, liquidez e estrutura de mercado. Não é palpite. É confluência.</p>
+            <div class="stats-grid animate-up delay-2" style="margin-top:2rem;max-width:600px;margin-left:auto;margin-right:auto;">
+                <div class="stat-card">
+                    <div class="stat-icon">📡</div>
+                    <span class="stat-number counter" data-target="9" data-suffix="">0</span>
+                    <div class="stat-label">Sinais Ativos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <span class="stat-number counter" data-target="94" data-suffix="%">0</span>
+                    <div class="stat-label">Assertividade Mensal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <span class="stat-number counter" data-target="28" data-suffix="">0</span>
+                    <div class="stat-label">Sinais no Mês</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTROS + SINAIS -->
+    <section style="padding: 2rem 0 5rem;">
+        <div class="container">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterSignals('todos')">Todos</button>
+                <button class="filter-btn" onclick="filterSignals('forex')">Forex</button>
+                <button class="filter-btn" onclick="filterSignals('cripto')">Cripto</button>
+                <button class="filter-btn" onclick="filterSignals('acoes')">Ações / Índice</button>
+                <button class="filter-btn" onclick="filterSignals('swing')">Swing</button>
+                <button class="filter-btn" onclick="filterSignals('scalp')">Scalp</button>
+            </div>
+
+            <div class="legend-bar">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--profit)"></div>Aberto — em andamento</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#ffc832"></div>Aguardando gatilho</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--text-muted)"></div>Encerrado</div>
+            </div>
+
+            <!-- FOREX -->
+            <div class="signals-section" data-category="forex swing">
+                <div class="signals-section-title">💱 Forex — Swing</div>
+
+                <div class="signal-full-card" data-cat="forex swing">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">EUR/USD</div>
+                        <div class="signal-meta">M15 · Confluência OB + FVG · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Pullback em FVG bullish após quebra de estrutura. Volume crescente. Alvo na liquidez superior em 1.0950.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">1.0845</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">1.0820</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">1.0950</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">4.2</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="forex scalp">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-venda">Venda</div>
+                        <div class="signal-pair">USD/JPY</div>
+                        <div class="signal-meta">H1 · Order Block + Fibo 61.8 · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">OB de venda em premium. Confluência com fibo 61.8 e resistência psicológica 151.50. Reversão esperada para 150.80.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">151.35</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">151.80</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">150.80</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">1.2</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="forex scalp">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">GBP/USD</div>
+                        <div class="signal-meta">M30 · Reversão de sessão Londres · <span class="status-watch">⏳ Aguardando</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Setup de reversão na abertura de Londres. Aguardando breakout da máxima asiática + candle de confirmação M5.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">1.2668</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">1.2635</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">1.2740</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">2.2</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRIPTO -->
+            <div class="signals-section" data-category="cripto swing">
+                <div class="signals-section-title">🪙 Cripto</div>
+
+                <div class="signal-full-card" data-cat="cripto swing">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">BTC/USDT</div>
+                        <div class="signal-meta">H4 · OB Diário + Discount · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Discount em OB diário. Divergência de compra no funding rate. Alvo na quebra de equal highs 66.5k.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">63.800</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">62.900</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">66.500</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">3.0</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="cripto scalp">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">SOL/USDT</div>
+                        <div class="signal-meta">H1 · FVG M15 + Volume · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Piso de liquidez formado. Reação em FVG de 15min com volume crescente. Scalp na subida com alvo 155.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">147.50</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">144.00</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">155.00</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">2.1</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="cripto swing">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-venda">Venda</div>
+                        <div class="signal-pair">BNB/USDT</div>
+                        <div class="signal-meta">H4 · OB Premium + Funding · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Premium em OB de venda. Respeitou resistência de range. Funding positivo exaustivo indicando pressão vendedora.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">592.00</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">600.00</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">570.00</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">2.7</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AÇÕES -->
+            <div class="signals-section" data-category="acoes swing scalp">
+                <div class="signals-section-title">🏛️ Ações & Índice</div>
+
+                <div class="signal-full-card" data-cat="acoes scalp">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">WIN$ · M5</div>
+                        <div class="signal-meta">Scalp Intra-Day · POC + FVG · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Pullback em POC diário + FVG M15 bullish. Entrada confirmada após candle de reversão. Janela das 10h.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">124.680</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">124.400</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">125.200</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">1.9</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="acoes swing">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-compra">Compra</div>
+                        <div class="signal-pair">PETR4 · Diário</div>
+                        <div class="signal-meta">Swing 5–7 dias · Rompimento · <span class="status-watch">⏳ Aguardando</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Rompimento de topo histórico com volume acima da média. Aguardando pullback para 38.00 para entrada ideal.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry Ideal</div><div class="level-val">R$ 38,00</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">R$ 36,80</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">R$ 41,00</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">2.5</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signal-full-card" data-cat="acoes swing">
+                    <div class="signal-header">
+                        <div class="signal-badge badge-venda">Venda</div>
+                        <div class="signal-pair">VALE3 · Diário</div>
+                        <div class="signal-meta">Swing · Pressão setorial · <span class="status-open">● Aberto</span></div>
+                    </div>
+                    <div class="signal-body">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.8rem;">Minério de ferro em queda na China. Resistência no OB diário. Fluxo institucional vendido. Pressão continuada esperada.</div>
+                            <div class="signal-levels">
+                                <div class="level-box level-entry"><div class="level-label">Entry</div><div class="level-val">R$ 62,30</div></div>
+                                <div class="level-box level-sl"><div class="level-label">Stop Loss</div><div class="level-val">R$ 64,50</div></div>
+                                <div class="level-box level-tp"><div class="level-label">Take Profit</div><div class="level-val">R$ 57,00</div></div>
+                            </div>
+                        </div>
+                        <div class="signal-stat">
+                            <div class="rr">2.4</div>
+                            <div class="rr-label">RR Ratio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="trading-footer">
+        <div class="container">
+            <p style="margin-bottom:0.5rem;">© Hopewaves Trading — Sinais são educativos. Não são recomendação de investimento. Opere com gestão.</p>
+            <div style="display:flex;justify-content:center;gap:1.2rem;">
+                <a href="../" style="color:var(--text-muted);font-size:0.85rem;">Trading Home</a>
+                <a href="../ferramentas/" style="color:var(--text-muted);font-size:0.85rem;">Ferramentas</a>
+                <a href="../forex/" style="color:var(--text-muted);font-size:0.85rem;">Forex</a>
+                <a href="../cripto/" style="color:var(--text-muted);font-size:0.85rem;">Cripto</a>
+                <a href="../acoes/" style="color:var(--text-muted);font-size:0.85rem;">Ações</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/trading.js"></script>
+    <script>
+        function filterSignals(cat) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.signal-full-card').forEach(card => {
+                if (cat === 'todos') {
+                    card.style.display = '';
+                } else {
+                    const cardCat = card.dataset.cat || '';
+                    card.style.display = cardCat.includes(cat) ? '' : 'none';
+                }
+            });
+
+            document.querySelectorAll('.signals-section').forEach(section => {
+                const hasVisible = [...section.querySelectorAll('.signal-full-card')].some(c => c.style.display !== 'none');
+                section.style.display = (cat === 'todos' || hasVisible) ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

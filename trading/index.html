@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Trading | A Central do Trader Inteligente</title>
+    <meta name="description" content="O ecossistema vivo para traders de Forex, Cripto, Ações e Day Trade. Ferramentas, sinais, calculadoras e a maior comunidade de traders do Brasil.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/trading.css">
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <!-- Live Ticker -->
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>EUR/USD</strong> <span class="live-value up" data-base="1.0850" data-pct="false">1.0850</span></div>
+            <div class="ticker-item"><strong>GBP/USD</strong> <span class="live-value down" data-base="1.2642" data-pct="false">1.2642</span></div>
+            <div class="ticker-item"><strong>USD/JPY</strong> <span class="live-value up" data-base="151.30" data-pct="false">151.30</span></div>
+            <div class="ticker-item"><strong>BTC/USD</strong> <span class="live-value up" data-base="64230.00" data-pct="false">64.230,00</span></div>
+            <div class="ticker-item"><strong>ETH/USD</strong> <span class="live-value down" data-base="3120.50" data-pct="false">3.120,50</span></div>
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127.450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+            <div class="ticker-item"><strong>WIN</strong> <span class="live-value down" data-base="124.680" data-pct="false">124.680</span></div>
+            <div class="ticker-item"><strong>OURO</strong> <span class="live-value up" data-base="2320.00" data-pct="false">2.320,00</span></div>
+            <div class="ticker-item"><strong>S&P 500</strong> <span class="live-value up" data-base="5120.00" data-pct="false">5.120,00</span></div>
+            <div class="ticker-item"><strong>NDX</strong> <span class="live-value up" data-base="18150.00" data-pct="false">18.150,00</span></div>
+            <div class="ticker-item"><strong>VIX</strong> <span class="live-value down" data-base="13.20" data-pct="false">13,20</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="ferramentas/">Ferramentas</a></li>
+                <li><a href="sinais/">Sinais</a></li>
+                <li><a href="#mercados">Mercados</a></li>
+                <li><a href="#comunidade">Comunidade</a></li>
+                <li><a href="#lista-espera" class="btn-primary">Entrar na Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="trading-hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-live-badge animate-up">
+                    <span class="pulse-dot"></span>
+                    Mercado em tempo real
+                </div>
+                <h1 class="animate-up">O Radar que o <span>Trader Definitivo</span> Precisa</h1>
+                <p class="animate-up delay-1">Sinais, calculadoras, calendário econômico e a comunidade mais voraz do mercado. Não é curso. É inteligência de mercado pura — e em breve, o SaaS que vai automatizar sua consistência.</p>
+                <div class="hero-actions animate-up delay-2">
+                    <a href="ferramentas/" class="btn-primary">Calcular Meu Risco Agora</a>
+                    <a href="sinais/" class="btn-secondary">Ver Sinais de Hoje</a>
+                </div>
+                <div class="stats-grid animate-up delay-3" style="margin-top: 2.5rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔥</div>
+                        <span class="stat-number counter" data-target="2847" data-suffix="+">0</span>
+                        <div class="stat-label">Traders na Lista VIP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <span class="stat-number counter" data-target="94" data-suffix="%">0</span>
+                        <div class="stat-label">Assertividade dos Sinais</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧠</div>
+                        <span class="stat-number counter" data-target="12" data-suffix="">0</span>
+                        <div class="stat-label">Ferramentas Grátis</div>
+                    </div>
+                </div>
+            </div>
+            <div class="mini-chart-wrap animate-up delay-3">
+                <div class="mini-chart-header">
+                    <h4>EUR/USD — M5</h4>
+                    <div class="price" style="color:var(--profit)">1.0850</div>
+                </div>
+                <canvas id="miniChart" width="500" height="180" style="width:100%;height:180px;display:block;border-radius:12px;"></canvas>
+                <div style="margin-top:0.8rem;display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);">
+                    <span>Low: 1.0832</span>
+                    <span style="color:var(--profit)">+0.24%</span>
+                    <span>High: 1.0867</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MERCADOS -->
+    <section id="mercados" style="padding: 5rem 0;">
+        <div class="container">
+            <div class="section-label">Ecossistema Completo</div>
+            <h2 class="section-title reveal">Um único hub para <span>todos os mercados</span></h2>
+            <p class="reveal" style="color:var(--text-muted);max-width:600px;margin-bottom:3rem;">Não importa se você opera Forex na Ásia, Day Trade no índice brasileiro ou Swing em cripto. Aqui você tem jornada própria.</p>
+            <div class="market-grid">
+                <a href="forex/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">💱</div>
+                    <h3>Forex</h3>
+                    <p>Os maiores pares com análise multi-timeframe, níveis de liquidez e economias globais em tempo real.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Alta</span>
+                        <span class="sessions">24h</span>
+                    </div>
+                </a>
+                <a href="cripto/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">🪙</div>
+                    <h3>Cripto</h3>
+                    <p>Bitcoin, Ethereum e altcoins com ondas de liquidez, funding rates e análise on-chain resumida.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Extrema</span>
+                        <span class="sessions">24/7</span>
+                    </div>
+                </a>
+                <a href="acoes/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">🏛️</div>
+                    <h3>Ações (B3)</h3>
+                    <p>Fluxo de varejo, institutionals, setores em rotation e mapa de calor da bolsa brasileira.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Média</span>
+                        <span class="sessions">Bovespa</span>
+                    </div>
+                </a>
+                <a href="day-trade/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
+                    <h3>Day Trade</h3>
+                    <p>Setup de alta frequência, períodos de maior volatilidade e gestão intra-diária de risco.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Alta</span>
+                        <span class="sessions">Abertura</span>
+                    </div>
+                </a>
+                <a href="swing-trade/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">🎯</div>
+                    <h3>Swing Trade</h3>
+                    <p>Captura de tendências de médio prazo com pontos de entrada milimétricos e pontos de saída táticos.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Média</span>
+                        <span class="sessions">Semanal</span>
+                    </div>
+                </a>
+                <a href="ferramentas/" class="market-card reveal">
+                    <div style="font-size:2rem;margin-bottom:0.5rem;">🛠️</div>
+                    <h3>Ferramentas</h3>
+                    <p>Calculadora de lote, risco/retorno, simulador de drawdown e muito mais para operar com precisão.</p>
+                    <div class="market-meta">
+                        <span class="volatility">Vol: Zero</span>
+                        <span class="sessions">Sempre</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SINAIS -->
+    <section style="padding: 4rem 0; background: linear-gradient(180deg, transparent, rgba(138,43,226,0.03), transparent);">
+        <div class="container">
+            <div class="section-label">Sinais ao Vivo</div>
+            <h2 class="section-title reveal">Isso não é palpite. É <span>probabilidade matada a pau</span>.</h2>
+            <p class="reveal" style="color:var(--text-muted);margin-bottom:2rem;">Nossos setups são baseados em confluência técnica: price action, liquidez, volume profile e estrutura de mercado.</p>
+
+            <div class="reveal">
+                <div class="signal-card">
+                    <div class="signal-badge badge-compra">Compra</div>
+                    <div>
+                        <div class="signal-pair">EUR/USD</div>
+                        <div class="signal-detail">M15 · B2/C2 Range Breakout · Confluência OB</div>
+                    </div>
+                    <div class="signal-targets">
+                        <strong>Entry: 1.0845</strong>
+                        SL: 1.0832 · TP: 1.0870
+                    </div>
+                </div>
+                <div class="signal-card">
+                    <div class="signal-badge badge-venda">Venda</div>
+                    <div>
+                        <div class="signal-pair">WIN$</div>
+                        <div class="signal-detail">M5 · Rejeição na POC · Venda institucional</div>
+                    </div>
+                    <div class="signal-targets">
+                        <strong>Entry: 124.850</strong>
+                        SL: 125.100 · TP: 124.450
+                    </div>
+                </div>
+                <div class="signal-card">
+                    <div class="signal-badge badge-compra">Compra</div>
+                    <div>
+                        <div class="signal-pair">BTC/USDT</div>
+                        <div class="signal-detail">H4 · Order Block diário + Discount · Divergence</div>
+                    </div>
+                    <div class="signal-targets">
+                        <strong>Entry: 63.800</strong>
+                        SL: 62.900 · TP: 66.500
+                    </div>
+                </div>
+                <div class="signal-card">
+                    <div class="signal-badge badge-neutro">Aguardando</div>
+                    <div>
+                        <div class="signal-pair">PETR4</div>
+                        <div class="signal-detail">Diário · Acumulação próxima ao suporte histórico</div>
+                    </div>
+                    <div class="signal-targets">
+                        <strong>Aguarde gatilho</strong>
+                        SL: — · TP: —
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:1.5rem;">
+                <a href="sinais/" class="btn-primary">Ver Todos os Sinais</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALC RAPIDA -->
+    <section style="padding: 5rem 0;">
+        <div class="container">
+            <div class="section-label">Precisão Cirúrgica</div>
+            <h2 class="section-title reveal">Calcule seu <span>tamanho de posição</span> em 4 segundos</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;">
+                <div class="calc-wrapper reveal">
+                    <form id="calcForm">
+                        <div class="calc-row">
+                            <div class="calc-group">
+                                <label>Capital (R$)</label>
+                                <input type="number" name="saldo" value="10000" step="100">
+                            </div>
+                            <div class="calc-group">
+                                <label>Risco por Trade (%)</label>
+                                <input type="number" name="risco" value="1" step="0.1">
+                            </div>
+                        </div>
+                        <div class="calc-row">
+                            <div class="calc-group">
+                                <label>Preço de Entrada</label>
+                                <input type="number" name="entry" value="1.0845" step="0.0001">
+                            </div>
+                            <div class="calc-group">
+                                <label>Stop Loss</label>
+                                <input type="number" name="sl" value="1.0832" step="0.0001">
+                            </div>
+                        </div>
+                        <div class="calc-row">
+                            <div class="calc-group">
+                                <label>Take Profit</label>
+                                <input type="number" name="tp" value="1.0870" step="0.0001">
+                            </div>
+                            <div class="calc-group">
+                                <label>Mercado</label>
+                                <select name="tipo">
+                                    <option value="forex">Forex</option>
+                                    <option value="acoes">Ações / Mini Índice</option>
+                                    <option value="cripto">Cripto</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="calc-result-box">
+                            <div>
+                                <div class="res-title">Tamanho</div>
+                                <div class="res-value" id="resLote">--</div>
+                            </div>
+                            <div>
+                                <div class="res-title">Risco (R$)</div>
+                                <div class="res-value res-loss" id="resRisco">--</div>
+                            </div>
+                            <div>
+                                <div class="res-title">Projeção (R$)</div>
+                                <div class="res-value res-profit" id="resGain">--</div>
+                            </div>
+                            <div>
+                                <div class="res-title">R:R</div>
+                                <div class="res-value" id="resRR" style="color:var(--primary)">--</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="reveal" style="padding-top:1rem;">
+                    <h3 style="font-size:1.6rem;margin-bottom:1rem;">Por que o tamanho importa mais que a direção?</h3>
+                    <p style="color:var(--text-muted);margin-bottom:1.2rem;">Um trader com 50% de assertividade pode ser milionário se souber gerenciar risco. Um trader com 80% de assertividade pode quebrar se arriscar 10% por trade. Nossa calculadora respeita a matemática, não a emoção.</p>
+                    <ul style="color:var(--text-muted);list-style:none;padding:0;display:flex;flex-direction:column;gap:0.8rem;">
+                        <li>✅ Nunca perca mais do que seu plano define</li>
+                        <li>✅ Normalize o risco entre Forex, Índice e Cripto</li>
+                        <li>✅ Veja automaticamente seu payoff esperado</li>
+                        <li>✅ Exporte resultados para seu diário de trades</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EVENTO / COUNTDOWN -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="waitlist-box reveal">
+                <div class="section-label" style="background:rgba(0,242,254,0.1);color:var(--primary);">Lançamento em Contagem Regressiva</div>
+                <h2 style="font-size:2.2rem;margin:1rem 0;">O SaaS que vai transformar sua <span>consistência</span> em dados</h2>
+                <p style="color:var(--text-muted);max-width:600px;margin:0 auto;">Journaling automático, análise de edge, relatório de psicologia operacional e backtester visual. A lista VIP leva aviso antecipado e 40% OFF no primeiro mês.</p>
+                <div style="font-size:3rem;font-family:'Outfit',sans-serif;font-weight:800;margin:1.5rem 0;letter-spacing:2px;" id="countdown">--</div>
+                <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+                    <input type="email" placeholder="Digite seu melhor e-mail" required>
+                    <button type="submit" class="btn-primary">Garantir Minha Vaga</button>
+                </form>
+                <p style="margin-top:1rem;font-size:0.8rem;color:var(--text-muted);">+2.847 traders já na fila. Sem spam, só avisamos no lançamento.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section id="comunidade" style="padding: 5rem 0;">
+        <div class="container">
+            <div class="section-label">Comunidade Real</div>
+            <h2 class="section-title reveal">Traders que pararam de <span>adivinhar</span> e começaram a medir</h2>
+            <div class="testi-grid">
+                <div class="testi-card reveal">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Os sinais do Hopewaves me fizeram passar de -R$ 8 mil no mês para +R$ 4.200 no seguinte. Não é mágica, é probabilidade aplicada."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">MF</div>
+                        <div><div class="testi-name">Marcos F.</div><div class="testi-role">Day Trader em WIN e WDO</div></div>
+                    </div>
+                </div>
+                <div class="testi-card reveal">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Finalmente entendi meu risco de verdade. A calculadora mostrou que eu estava arriscando 3x mais do que imaginava. Jogo mudou."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">JL</div>
+                        <div><div class="testi-name">Juliana L.</div><div class="testi-role">Swing Trader em Cripto</div></div>
+                    </div>
+                </div>
+                <div class="testi-card reveal">
+                    <div class="testi-stars">★★★★★</div>
+                    <p class="testi-text">"Estrutura limpa, dados reais e zero enrolação. Acompanho todo dia antes da abertura do mercado asiático. Indispensável."</p>
+                    <div class="testi-author">
+                        <div class="testi-avatar">RK</div>
+                        <div><div class="testi-name">Rafael K.</div><div class="testi-role">Forex Trader desde 2019</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWSLETTER FOOTER -->
+    <footer class="trading-footer">
+        <div class="container">
+            <div class="logo" style="margin-bottom:0.8rem;">Hope<span>waves</span> Trading</div>
+            <p style="margin-bottom:1rem;">O trader que mede, vence. O trader que sente, paga.</p>
+            <div style="display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.5rem;">
+                <a href="forex/" style="color:var(--text-muted);font-size:0.9rem;">Forex</a>
+                <a href="cripto/" style="color:var(--text-muted);font-size:0.9rem;">Cripto</a>
+                <a href="acoes/" style="color:var(--text-muted);font-size:0.9rem;">Ações</a>
+                <a href="day-trade/" style="color:var(--text-muted);font-size:0.9rem;">Day Trade</a>
+                <a href="swing-trade/" style="color:var(--text-muted);font-size:0.9rem;">Swing Trade</a>
+                <a href="ferramentas/" style="color:var(--text-muted);font-size:0.9rem;">Ferramentas</a>
+                <a href="sinais/" style="color:var(--text-muted);font-size:0.9rem;">Sinais</a>
+            </div>
+            <p style="font-size:0.75rem;opacity:0.6;">Aviso de Risco: Operações envolvem risco de perda. Nenhum conteúdo constitui recomendação de investimento. Educação e informação apenas.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="js/trading.js"></script>
+    <script>
+        function handleWaitlist(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const original = btn.textContent;
+            btn.textContent = 'Você entrou na fila! 🚀';
+            btn.disabled = true;
+            setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 3000);
+        }
+    </script>
+</body>
+</html>

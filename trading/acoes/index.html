@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Ações B3 | Fluxo Institucional e Oportunidades na Bolsa</title>
+    <meta name="description" content="Análise de ações da B3 com fluxo institucional, rotation de setores e mapa de calor. Sinais diários para PETR4, VALE3, WIN e os melhores ativos do Ibovespa.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/trading.css">
+    <style>
+        .sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .sector-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .sector-card:hover { transform: translateX(5px); border-color: rgba(0,242,254,0.25); }
+        .sector-name { font-weight: 700; font-size: 0.95rem; }
+        .sector-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .sector-pct { font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; }
+        .sector-pct.up { color: var(--profit); }
+        .sector-pct.down { color: var(--loss); }
+        .heat-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .heat-cell {
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: default;
+            transition: transform 0.2s;
+        }
+        .heat-cell:hover { transform: scale(1.05); }
+        .heat-hot { background: rgba(0,242,160,0.2); border: 1px solid rgba(0,242,160,0.3); color: var(--profit); }
+        .heat-mid { background: rgba(255,200,50,0.15); border: 1px solid rgba(255,200,50,0.3); color: #ffc832; }
+        .heat-cold { background: rgba(255,77,109,0.15); border: 1px solid rgba(255,77,109,0.3); color: var(--loss); }
+    </style>
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+            <div class="ticker-item"><strong>VALE3</strong> <span class="live-value down" data-base="62.30" data-pct="false">62,30</span></div>
+            <div class="ticker-item"><strong>ITUB4</strong> <span class="live-value up" data-base="33.80" data-pct="false">33,80</span></div>
+            <div class="ticker-item"><strong>BBDC4</strong> <span class="live-value down" data-base="14.50" data-pct="false">14,50</span></div>
+            <div class="ticker-item"><strong>MGLU3</strong> <span class="live-value down" data-base="2.18" data-pct="false">2,18</span></div>
+            <div class="ticker-item"><strong>WEGE3</strong> <span class="live-value up" data-base="41.90" data-pct="false">41,90</span></div>
+            <div class="ticker-item"><strong>WIN$</strong> <span class="live-value up" data-base="124680" data-pct="false">124.680</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="../">Trading</a></li>
+                <li><a href="../ferramentas/">Ferramentas</a></li>
+                <li><a href="../sinais/">Sinais</a></li>
+                <li><a href="../forex/">Forex</a></li>
+                <li><a href="../cripto/">Cripto</a></li>
+                <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="trading-hero" style="min-height:70vh;">
+        <div class="container" style="text-align:center;">
+            <div class="hero-live-badge animate-up"><span class="pulse-dot"></span>B3 ao vivo</div>
+            <h1 class="animate-up" style="font-size:3.8rem;">Onde o <span>Dinheiro Gordo</span> Entra na Bolsa</h1>
+            <p class="animate-up delay-1" style="max-width:700px;margin:0 auto 2rem;">Fluxo de varejo, fluxo institucional, rotation de setores e heat map do Ibovespa. Aqui você sabe antes onde o dinheiro está indo.</p>
+            <div class="hero-actions animate-up delay-2" style="justify-content:center;">
+                <a href="../sinais/" class="btn-primary">Sinais de Ações</a>
+                <a href="../ferramentas/" class="btn-secondary">Calculadora de Risco</a>
+            </div>
+            <div class="stats-grid animate-up delay-3" style="margin-top:2.5rem;max-width:700px;margin-left:auto;margin-right:auto;">
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <span class="stat-number counter" data-target="432" data-suffix="+">0</span>
+                    <div class="stat-label">Ativos Monitorados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏛️</div>
+                    <span class="stat-number counter" data-target="11" data-suffix="">0</span>
+                    <div class="stat-label">Setores Mapeados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <span class="stat-number counter" data-target="91" data-suffix="%">0</span>
+                    <div class="stat-label">Assertividade Swing</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HEAT MAP -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Mapa de Calor</div>
+            <h2 class="section-title reveal">Os destaques de <span>hoje no Ibovespa</span></h2>
+            <p class="reveal" style="color:var(--text-muted);margin-bottom:1.5rem;">Performance relativa dos principais ativos. Verde = força. Amarelo = neutro. Vermelho = fraqueza.</p>
+            <div class="heat-row reveal">
+                <div class="heat-cell heat-hot">PETR4 +1.8%</div>
+                <div class="heat-cell heat-hot">WEGE3 +1.4%</div>
+                <div class="heat-cell heat-hot">ITUB4 +0.9%</div>
+                <div class="heat-cell heat-mid">BBAS3 +0.3%</div>
+                <div class="heat-cell heat-mid">ABEV3 -0.1%</div>
+                <div class="heat-cell heat-cold">VALE3 -1.2%</div>
+                <div class="heat-cell heat-cold">MGLU3 -2.3%</div>
+                <div class="heat-cell heat-cold">CSAN3 -1.8%</div>
+            </div>
+            <div class="heat-row reveal">
+                <div class="heat-cell heat-hot">RAIL3 +2.1%</div>
+                <div class="heat-cell heat-mid">SUZB3 +0.4%</div>
+                <div class="heat-cell heat-mid">RENT3 -0.2%</div>
+                <div class="heat-cell heat-cold">BBDC4 -0.9%</div>
+                <div class="heat-cell heat-hot">HAPV3 +1.1%</div>
+                <div class="heat-cell heat-mid">RADL3 +0.6%</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROTATION DE SETORES -->
+    <section style="padding: 4rem 0; background: linear-gradient(180deg, transparent, rgba(0,242,254,0.03), transparent);">
+        <div class="container">
+            <div class="section-label">Rotation de Setores</div>
+            <h2 class="section-title reveal">Saiba qual setor é o <span>líder da semana</span></h2>
+            <div class="sector-grid">
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">⚡ Energia Elétrica</div><div class="sector-meta">EGIE3, CPLE6, CMIG4</div></div>
+                    <div class="sector-pct up">+2.4%</div>
+                </div>
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">🛢️ Petróleo & Gás</div><div class="sector-meta">PETR4, CSAN3, PRIO3</div></div>
+                    <div class="sector-pct up">+1.7%</div>
+                </div>
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">🏦 Bancos</div><div class="sector-meta">ITUB4, BBDC4, BBAS3</div></div>
+                    <div class="sector-pct up">+0.8%</div>
+                </div>
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">🏗️ Construção Civil</div><div class="sector-meta">CYRE3, MRVE3, EVEN3</div></div>
+                    <div class="sector-pct down">-0.5%</div>
+                </div>
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">⛏️ Mineração</div><div class="sector-meta">VALE3, CSNA3, GGBR4</div></div>
+                    <div class="sector-pct down">-1.3%</div>
+                </div>
+                <div class="sector-card reveal">
+                    <div><div class="sector-name">🛒 Varejo</div><div class="sector-meta">MGLU3, VIIA3, AMER3</div></div>
+                    <div class="sector-pct down">-2.1%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SINAIS B3 -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Setups de Hoje</div>
+            <h2 class="section-title reveal">Sinais ativos na <span>Bolsa</span></h2>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-compra">Compra</div>
+                <div>
+                    <div class="signal-pair">PETR4 · Diário</div>
+                    <div class="signal-detail">Rompimento de topo histórico com volume acima da média. Setorial de Petróleo em força. Alvo no próximo nível de liquidez.</div>
+                </div>
+                <div class="signal-targets"><strong>R$ 38,42</strong>SL: 37,10 · TP: 41,00</div>
+            </div>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-compra">Compra</div>
+                <div>
+                    <div class="signal-pair">WEGE3 · Semanal</div>
+                    <div class="signal-detail">Pullback em EMA21 semanal com candle de força. Estrutura de alta intacta. Fundamentos sólidos. Setup swing premium.</div>
+                </div>
+                <div class="signal-targets"><strong>R$ 41,90</strong>SL: 39,50 · TP: 47,00</div>
+            </div>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-venda">Venda</div>
+                <div>
+                    <div class="signal-pair">VALE3 · Diário</div>
+                    <div class="signal-detail">Minério de ferro em queda na China. Resistência no OB diário. Fluxo institucional vendido. Pressão continuada esperada.</div>
+                </div>
+                <div class="signal-targets"><strong>R$ 62,30</strong>SL: 64,50 · TP: 57,00</div>
+            </div>
+            <div style="text-align:center;margin-top:1.2rem;">
+                <a href="../sinais/" class="btn-primary">Ver Todos os Sinais de Ações</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA VIP -->
+    <section style="padding: 4rem 0;">
+        <div class="container" style="text-align:center;">
+            <h2 style="font-size:2.2rem;margin-bottom:1rem;">Análise de ações com <span>inteligência de mercado real</span></h2>
+            <p style="color:var(--text-muted);max-width:600px;margin:0 auto 1.5rem;">O SaaS Hopewaves vai automatizar o scan de setores, filtrar oportunidades por edge histórico e entregar o setup pronto para você operar.</p>
+            <a href="../#lista-espera" class="btn-primary" style="font-size:1.1rem;padding:1rem 2.4rem;">Garantir Vaga na Lista VIP</a>
+        </div>
+    </section>
+
+    <footer class="trading-footer">
+        <div class="container">
+            <p style="margin-bottom:0.5rem;">© Hopewaves Trading — Conteúdo educativo. Não é recomendação de investimento.</p>
+            <div style="display:flex;justify-content:center;gap:1.2rem;">
+                <a href="../" style="color:var(--text-muted);font-size:0.85rem;">Trading Home</a>
+                <a href="../ferramentas/" style="color:var(--text-muted);font-size:0.85rem;">Ferramentas</a>
+                <a href="../sinais/" style="color:var(--text-muted);font-size:0.85rem;">Sinais</a>
+                <a href="../forex/" style="color:var(--text-muted);font-size:0.85rem;">Forex</a>
+                <a href="../cripto/" style="color:var(--text-muted);font-size:0.85rem;">Cripto</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/trading.js"></script>
+</body>
+</html>

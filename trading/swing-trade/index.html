@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Swing Trade | Tendências de Médio Prazo com Precisão</title>
+    <meta name="description" content="Swing trade em ações, Forex e cripto. Captura de tendências de médio prazo com análise multi-timeframe, pontos de entrada milimétricos e saídas táticas.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/trading.css">
+    <style>
+        .mtf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .mtf-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .mtf-card:hover { transform: translateY(-4px); border-color: rgba(138,43,226,0.3); }
+        .mtf-tf { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .mtf-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem; }
+        .mtf-desc { font-size: 0.88rem; color: var(--text-muted); }
+        .mtf-role { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+
+        .swing-step {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 1.2rem;
+            align-items: start;
+            margin-bottom: 1.5rem;
+        }
+        .step-circle {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0,242,254,0.15), rgba(138,43,226,0.15));
+            border: 2px solid rgba(138,43,226,0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Outfit'; font-size: 1.4rem; font-weight: 800;
+            color: var(--accent);
+        }
+        .step-body { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.2rem 1.5rem; }
+        .step-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+        .step-desc { font-size: 0.88rem; color: var(--text-muted); }
+
+        @media(max-width: 700px) { .mtf-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>EUR/USD</strong> <span class="live-value up" data-base="1.0850" data-pct="false">1.0850</span></div>
+            <div class="ticker-item"><strong>BTC/USD</strong> <span class="live-value up" data-base="64230" data-pct="false">64.230</span></div>
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+            <div class="ticker-item"><strong>WEGE3</strong> <span class="live-value up" data-base="41.90" data-pct="false">41,90</span></div>
+            <div class="ticker-item"><strong>GBP/USD</strong> <span class="live-value down" data-base="1.2642" data-pct="false">1.2642</span></div>
+            <div class="ticker-item"><strong>ETH/USD</strong> <span class="live-value down" data-base="3120.50" data-pct="false">3.120,50</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="../">Trading</a></li>
+                <li><a href="../ferramentas/">Ferramentas</a></li>
+                <li><a href="../sinais/">Sinais</a></li>
+                <li><a href="../day-trade/">Day Trade</a></li>
+                <li><a href="../acoes/">Ações</a></li>
+                <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="trading-hero" style="min-height:70vh;">
+        <div class="container" style="text-align:center;">
+            <div class="hero-live-badge animate-up"><span class="pulse-dot"></span>Tendências ativas</div>
+            <h1 class="animate-up" style="font-size:3.8rem;">Pegue a <span>Onda Grande</span> com Disciplina</h1>
+            <p class="animate-up delay-1" style="max-width:700px;margin:0 auto 2rem;">Swing trade não é sobre estar certo sempre. É sobre estar certo quando importa, com RR alto, posição dimensionada e paciência cirúrgica.</p>
+            <div class="hero-actions animate-up delay-2" style="justify-content:center;">
+                <a href="../sinais/" class="btn-primary">Ver Swings Ativos</a>
+                <a href="../ferramentas/" class="btn-secondary">Calcular RR</a>
+            </div>
+            <div class="stats-grid animate-up delay-3" style="margin-top:2.5rem;max-width:700px;margin-left:auto;margin-right:auto;">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <span class="stat-number counter" data-target="3" data-suffix="–8 dias">0</span>
+                    <div class="stat-label">Duração Média</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <span class="stat-number counter" data-target="3" data-suffix=":1">0</span>
+                    <div class="stat-label">RR Médio Buscado</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔭</div>
+                    <span class="stat-number counter" data-target="15" data-suffix="+">0</span>
+                    <div class="stat-label">Setups Ativos</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METODOLOGIA MTF -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Análise Multi-Timeframe</div>
+            <h2 class="section-title reveal">A estrutura que <span>determina tudo</span></h2>
+            <p class="reveal" style="color:var(--text-muted);margin-bottom:2rem;">Três timeframes, três funções. Confunda isso e você vai entrar certo no lugar errado.</p>
+            <div class="mtf-grid reveal">
+                <div class="mtf-card">
+                    <div class="mtf-label">Contexto</div>
+                    <div class="mtf-tf">Semanal</div>
+                    <div class="mtf-role">O Mapa</div>
+                    <div class="mtf-desc">Define a tendência principal. Se o semanal é de alta, você só compra no diário. Simples assim.</div>
+                </div>
+                <div class="mtf-card">
+                    <div class="mtf-label">Direção</div>
+                    <div class="mtf-tf">Diário</div>
+                    <div class="mtf-role">A Bússola</div>
+                    <div class="mtf-desc">Identifica pullbacks, suportes e resistências-chave. É onde você decide o lado da operação.</div>
+                </div>
+                <div class="mtf-card">
+                    <div class="mtf-label">Gatilho</div>
+                    <div class="mtf-tf">H4</div>
+                    <div class="mtf-role">O Gatilho</div>
+                    <div class="mtf-desc">Onde você aguarda o candle de confirmação para entrar. Entrada milimétrica para stop apertado.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMO MONTAR UM SWING -->
+    <section style="padding: 4rem 0; background: linear-gradient(180deg, transparent, rgba(0,242,254,0.03), transparent);">
+        <div class="container">
+            <div class="section-label">Passo a Passo</div>
+            <h2 class="section-title reveal">Como montar um <span>swing trade</span> perfeito</h2>
+            <div style="max-width:680px;">
+                <div class="swing-step reveal">
+                    <div class="step-circle">1</div>
+                    <div class="step-body">
+                        <div class="step-title">Identifique a Tendência Macro (Semanal)</div>
+                        <div class="step-desc">Topos e fundos ascendentes = tendência de alta. Só compre. Topos e fundos descendentes = tendência de baixa. Só venda. Não complique o que é simples.</div>
+                    </div>
+                </div>
+                <div class="swing-step reveal">
+                    <div class="step-circle">2</div>
+                    <div class="step-body">
+                        <div class="step-title">Encontre a Zona de Compra no Diário</div>
+                        <div class="step-desc">Suporte horizontal, EMA21, Order Block ou FVG no diário. Esse é o seu ponto de interesse. Você quer entrar aqui, não antes.</div>
+                    </div>
+                </div>
+                <div class="swing-step reveal">
+                    <div class="step-circle">3</div>
+                    <div class="step-body">
+                        <div class="step-title">Aguarde Confirmação no H4</div>
+                        <div class="step-desc">Candle de reversão, engolfo, ou sequência de 3 candles de alta dentro da zona. Só então você entra. Paciência é a habilidade mais lucrativa.</div>
+                    </div>
+                </div>
+                <div class="swing-step reveal">
+                    <div class="step-circle">4</div>
+                    <div class="step-body">
+                        <div class="step-title">Defina Stop e Alvo (RR mín. 2:1)</div>
+                        <div class="step-desc">Stop abaixo da zona de suporte. Alvo no próximo nível de liquidez. Se o RR for menor que 2:1, o setup não é válido. Não force.</div>
+                    </div>
+                </div>
+                <div class="swing-step reveal">
+                    <div class="step-circle">5</div>
+                    <div class="step-body">
+                        <div class="step-title">Gerencie com Trailing Stop</div>
+                        <div class="step-desc">Após 1:1 atingido, mova o stop para o breakeven. Após 2:1, aplique trailing. Deixe o mercado te tirar com lucro, não saia na emoção.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SWINGS ATIVOS -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Portfólio de Swings</div>
+            <h2 class="section-title reveal">Operações ativas <span>agora</span></h2>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-compra">Compra</div>
+                <div>
+                    <div class="signal-pair">EUR/USD · Diário</div>
+                    <div class="signal-detail">Pullback em EMA50 diária + OB bullish semanal. Estrutura de alta intacta. Entrada após H4 confirmar. Swing de 5–8 dias.</div>
+                </div>
+                <div class="signal-targets"><strong>1.0845</strong>SL: 1.0780 · TP: 1.1050</div>
+            </div>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-compra">Compra</div>
+                <div>
+                    <div class="signal-pair">PETR4 · Semanal</div>
+                    <div class="signal-detail">Pullback no suporte histórico + petróleo brent em acumulação. Entrada no candle semanal de reversão. Alvo 41,00+.</div>
+                </div>
+                <div class="signal-targets"><strong>R$ 38,42</strong>SL: 36,80 · TP: 41,50</div>
+            </div>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-neutro">Monitor</div>
+                <div>
+                    <div class="signal-pair">BTC/USD · Semanal</div>
+                    <div class="signal-detail">Bitcoin em zona de acumulação diária. Aguardando rompimento de 66k no semanal para confirmar novo impulso.</div>
+                </div>
+                <div class="signal-targets"><strong>Aguardando</strong>SL: — · TP: —</div>
+            </div>
+            <div style="text-align:center;margin-top:1.2rem;">
+                <a href="../sinais/" class="btn-primary">Ver Todos os Swings</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="trading-footer">
+        <div class="container">
+            <p style="margin-bottom:0.5rem;">© Hopewaves Trading — Swing trade envolve risco. Opere sempre com gestão.</p>
+            <div style="display:flex;justify-content:center;gap:1.2rem;">
+                <a href="../" style="color:var(--text-muted);font-size:0.85rem;">Trading Home</a>
+                <a href="../ferramentas/" style="color:var(--text-muted);font-size:0.85rem;">Ferramentas</a>
+                <a href="../day-trade/" style="color:var(--text-muted);font-size:0.85rem;">Day Trade</a>
+                <a href="../sinais/" style="color:var(--text-muted);font-size:0.85rem;">Sinais</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/trading.js"></script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+/* ========================================
+   HOPEWAVES TRADING — EXTENSION STYLES
+   ======================================== */
+
+:root {
+    --profit: #00f2a0;
+    --loss: #ff4d6d;
+    --chart-grid: rgba(255,255,255,0.05);
+}
+
+/* Ticker Bar */
+.ticker-bar {
+    background: rgba(10,10,15,0.95);
+    border-bottom: 1px solid var(--glass-border);
+    overflow: hidden;
+    padding: 0.6rem 0;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    position: relative;
+}
+.ticker-track {
+    display: inline-flex;
+    gap: 2.5rem;
+    animation: ticker 40s linear infinite;
+    padding-left: 100%;
+}
+.ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+}
+.ticker-item strong { color: var(--text-main); }
+.ticker-item .up   { color: var(--profit); }
+.ticker-item .down { color: var(--loss); }
+@keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Hero Trading */
+.trading-hero {
+    min-height: 90vh;
+    padding-top: 80px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+.trading-hero .container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+.hero-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,242,160,0.1);
+    border: 1px solid rgba(0,242,160,0.3);
+    color: var(--profit);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+}
+.pulse-dot {
+    width: 8px; height: 8px;
+    background: var(--profit);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s infinite;
+}
+@keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%     { opacity: 0.4; transform: scale(1.6); }
+}
+
+/* Mini Chart Canvas */
+.mini-chart-wrap {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+}
+.mini-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.mini-chart-header h4 { font-size: 1rem; }
+.mini-chart-header .price { font-size: 1.4rem; font-family: 'Outfit'; font-weight: 800; }
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin: 3rem 0;
+}
+.stat-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(138,43,226,0.3);
+}
+.stat-card .stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.stat-card .stat-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+}
+.stat-card .stat-label { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem; }
+
+/* Section title */
+.section-label {
+    display: inline-block;
+    background: rgba(138,43,226,0.15);
+    color: var(--accent);
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+.section-title {
+    font-size: 2.8rem;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+.section-title span {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Market Cards */
+.market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+.market-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+.market-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,242,254,0.06), rgba(138,43,226,0.06));
+    opacity: 0; transition: opacity 0.35s ease;
+}
+.market-card:hover::before { opacity: 1; }
+.market-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(138,43,226,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+}
+.market-card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; position: relative; z-index: 1; }
+.market-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem; position: relative; z-index: 1; }
+.market-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-muted); position: relative; z-index: 1; }
+.market-meta .volatility { color: var(--accent); font-weight: 700; }
+.market-meta .sessions { color: var(--primary); font-weight: 700; }
+
+/* Signal Card */
+.signal-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.2rem;
+    align-items: center;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+.signal-card:hover { border-color: rgba(0,242,254,0.25); transform: translateX(5px); }
+.signal-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.badge-compra  { background: rgba(0,242,160,0.15); color: var(--profit); border: 1px solid rgba(0,242,160,0.3); }
+.badge-venda   { background: rgba(255,77,109,0.15); color: var(--loss); border: 1px solid rgba(255,77,109,0.3); }
+.badge-neutro  { background: rgba(160,160,176,0.15); color: var(--text-muted); border: 1px solid rgba(160,160,176,0.3); }
+.signal-pair { font-weight: 700; font-family: 'Outfit'; font-size: 1.1rem; }
+.signal-detail { color: var(--text-muted); font-size: 0.85rem; }
+.signal-targets { text-align: right; font-size: 0.85rem; color: var(--text-muted); }
+.signal-targets strong { color: var(--text-main); display: block; font-size: 1rem; }
+
+/* Calculator */
+.calc-wrapper {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    backdrop-filter: blur(12px);
+}
+.calc-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.calc-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+.calc-group input, .calc-group select {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+.calc-group input:focus, .calc-group select:focus {
+    border-color: var(--accent);
+}
+.calc-result-box {
+    background: rgba(0,0,0,0.2);
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+.calc-result-box .res-title { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+.calc-result-box .res-value { font-size: 1.5rem; font-weight: 800; font-family: 'Outfit'; }
+.res-profit { color: var(--profit); }
+.res-loss   { color: var(--loss); }
+
+/* Lead Magnet / Waitlist */
+.waitlist-box {
+    background: linear-gradient(135deg, rgba(0,242,254,0.08), rgba(138,43,226,0.08));
+    border: 1px solid rgba(138,43,226,0.3);
+    border-radius: 24px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.waitlist-box::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at top right, rgba(138,43,226,0.15), transparent 60%);
+}
+.waitlist-form {
+    display: flex;
+    gap: 0.8rem;
+    max-width: 500px;
+    margin: 1.5rem auto 0;
+    position: relative; z-index: 1;
+}
+.waitlist-form input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    padding: 0.9rem 1.4rem;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+}
+.waitlist-form button { white-space: nowrap; }
+
+/* Testimonials */
+.testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.testi-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    transition: transform 0.3s ease;
+}
+.testi-card:hover { transform: translateY(-5px); }
+.testi-stars { color: #ffd700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.testi-text { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+.testi-author { display: flex; align-items: center; gap: 0.8rem; }
+.testi-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1rem; color: #fff;
+}
+.testi-name { font-weight: 700; font-size: 0.95rem; }
+.testi-role { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Footer trading */
+.trading-footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--glass-border);
+    margin-top: 4rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .trading-hero .container { grid-template-columns: 1fr; text-align: center; }
+    .section-title { font-size: 2.2rem; }
+    .waitlist-form { flex-direction: column; }
+    .signal-card { grid-template-columns: 1fr; text-align: center; gap: 0.6rem; }
+    .signal-targets { text-align: center; }
+    .calc-row { grid-template-columns: 1fr; }
+}

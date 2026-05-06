@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Ferramentas | Calculadoras de Trading Profissional</title>
+    <meta name="description" content="Calculadoras profissionais de trading: tamanho de posição, risco/retorno, simulador de drawdown, calculadora de pips e juros compostos. Gratuito e sem cadastro.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/trading.css">
+    <style>
+        .tools-nav {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+        .tool-tab {
+            padding: 0.6rem 1.4rem;
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+        }
+        .tool-tab.active, .tool-tab:hover {
+            background: rgba(138,43,226,0.2);
+            border-color: rgba(138,43,226,0.5);
+            color: var(--accent);
+        }
+        .tool-panel { display: none; }
+        .tool-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+
+        .calc-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+        }
+        .calc-card h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+        .calc-card .subtitle { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        .input-group input, .input-group select {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border); border-radius: 12px;
+            padding: 0.8rem 1rem; color: var(--text-main);
+            font-family: 'Inter', sans-serif; font-size: 1rem; outline: none;
+            transition: border-color 0.3s; box-sizing: border-box;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
+
+        .result-grid {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .result-item { text-align: center; }
+        .result-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .result-value { font-family: 'Outfit'; font-size: 1.6rem; font-weight: 800; }
+        .result-value.profit { color: var(--profit); }
+        .result-value.loss { color: var(--loss); }
+        .result-value.neutral { color: var(--primary); }
+        .result-value.warn { color: #ffc832; }
+
+        .calc-explainer {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+        .calc-explainer h3 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+        .explainer-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+        .explainer-list li {
+            display: flex; gap: 0.8rem; align-items: flex-start;
+            font-size: 0.9rem; color: var(--text-muted);
+        }
+        .explainer-list li .icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+        .info-box {
+            background: rgba(0,242,254,0.06);
+            border: 1px solid rgba(0,242,254,0.2);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 1.2rem;
+        }
+
+        .draw-bar-container { margin-top: 1rem; }
+        .draw-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+        .draw-bar-track { background: rgba(255,255,255,0.05); border-radius: 100px; height: 8px; overflow: hidden; }
+        .draw-bar-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease; }
+        .draw-bar-fill.safe { background: linear-gradient(90deg, var(--profit), #00d97e); }
+        .draw-bar-fill.warn { background: linear-gradient(90deg, #ffc832, #ff9900); }
+        .draw-bar-fill.danger { background: linear-gradient(90deg, var(--loss), #cc0025); }
+
+        @media(max-width: 900px) {
+            .tool-panel.active { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>EUR/USD</strong> <span class="live-value up" data-base="1.0850" data-pct="false">1.0850</span></div>
+            <div class="ticker-item"><strong>BTC/USD</strong> <span class="live-value up" data-base="64230" data-pct="false">64.230</span></div>
+            <div class="ticker-item"><strong>WIN$</strong> <span class="live-value down" data-base="124680" data-pct="false">124.680</span></div>
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>USD/JPY</strong> <span class="live-value up" data-base="151.30" data-pct="false">151.30</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="../">Trading</a></li>
+                <li><a href="../sinais/">Sinais</a></li>
+                <li><a href="../forex/">Forex</a></li>
+                <li><a href="../cripto/">Cripto</a></li>
+                <li><a href="../acoes/">Ações</a></li>
+                <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section style="padding: 6rem 0 2rem; text-align:center;">
+        <div class="container">
+            <div class="hero-live-badge animate-up" style="justify-content:center;display:inline-flex;"><span class="pulse-dot" style="background:var(--accent);"></span>12 Ferramentas Gratuitas</div>
+            <h1 class="animate-up" style="font-size:3.2rem;margin-top:1rem;">Ferramentas de <span style="background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Precisão Cirúrgica</span></h1>
+            <p class="animate-up delay-1" style="color:var(--text-muted);max-width:600px;margin:0.8rem auto 0;">Calculadoras profissionais que traders de institucional usam. Gratuitas. Sem cadastro. Sem desculpa para operar sem gestão.</p>
+        </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section style="padding: 2rem 0 5rem;">
+        <div class="container">
+            <div class="tools-nav">
+                <button class="tool-tab active" onclick="switchTool('posicao')">📐 Tamanho de Posição</button>
+                <button class="tool-tab" onclick="switchTool('drawdown')">📉 Simulador de Drawdown</button>
+                <button class="tool-tab" onclick="switchTool('juros')">💰 Juros Compostos</button>
+            </div>
+
+            <!-- CALCULADORA DE POSIÇÃO -->
+            <div id="tool-posicao" class="tool-panel active">
+                <div class="calc-card">
+                    <h3>🎯 Calculadora de Tamanho de Posição</h3>
+                    <div class="subtitle">Descubra exatamente quantos lotes/contratos operar para respeitar seu risco.</div>
+                    <form id="calcPosicao">
+                        <div class="calc-row">
+                            <div class="input-group">
+                                <label>Capital Total (R$)</label>
+                                <input type="number" name="capital" value="10000" step="100" oninput="calcPosition()">
+                            </div>
+                            <div class="input-group">
+                                <label>Risco por Trade (%)</label>
+                                <input type="number" name="risco" value="1" step="0.1" min="0.1" max="10" oninput="calcPosition()">
+                            </div>
+                        </div>
+                        <div class="calc-row">
+                            <div class="input-group">
+                                <label>Preço de Entrada</label>
+                                <input type="number" name="entry" value="1.0845" step="0.0001" oninput="calcPosition()">
+                            </div>
+                            <div class="input-group">
+                                <label>Stop Loss</label>
+                                <input type="number" name="sl" value="1.0820" step="0.0001" oninput="calcPosition()">
+                            </div>
+                        </div>
+                        <div class="calc-row">
+                            <div class="input-group">
+                                <label>Take Profit</label>
+                                <input type="number" name="tp" value="1.0950" step="0.0001" oninput="calcPosition()">
+                            </div>
+                            <div class="input-group">
+                                <label>Mercado</label>
+                                <select name="tipo" onchange="calcPosition()">
+                                    <option value="forex">Forex (Lotes)</option>
+                                    <option value="acoes">Mini Índice / Ações</option>
+                                    <option value="cripto">Cripto</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">Tamanho</div>
+                            <div class="result-value neutral" id="posLote">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Risco (R$)</div>
+                            <div class="result-value loss" id="posRisco">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Projeção Ganho</div>
+                            <div class="result-value profit" id="posGain">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Ratio R:R</div>
+                            <div class="result-value neutral" id="posRR">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="calc-explainer">
+                    <h3>Por que tamanho de posição importa?</h3>
+                    <ul class="explainer-list">
+                        <li><span class="icon">🧠</span><span>Um trader com <strong>50% de acerto</strong> pode ser lucrativo se tiver RR > 2:1. Um com 80% pode quebrar se arriscar 10% por trade.</span></li>
+                        <li><span class="icon">📐</span><span>Nunca arrisque mais de 1–2% por trade. Com 100 trades, você pode ter 20 perdas seguidas sem falência.</span></li>
+                        <li><span class="icon">🎯</span><span>RR mínimo recomendado: <strong>2:1</strong>. Isso significa que você precisa acertar apenas 34% das vezes para ser lucrativo.</span></li>
+                        <li><span class="icon">⚡</span><span>Normalize o risco entre mercados. R$ 100 de risco no WIN e R$ 100 em Forex são a mesma gestão. A calculadora faz isso por você.</span></li>
+                        <li><span class="icon">📒</span><span>Exporte cada cálculo para seu diário de trade. Consistência começa no pré-trade, não na execução.</span></li>
+                    </ul>
+                    <div class="info-box">
+                        💡 <strong>Dica:</strong> Se o RR calculado for menor que 1.5:1, o setup provavelmente não vale a entrada. Aguarde uma zona de entrada melhor para ampliar o RR.
+                    </div>
+                </div>
+            </div>
+
+            <!-- DRAWDOWN SIMULATOR -->
+            <div id="tool-drawdown" class="tool-panel">
+                <div class="calc-card">
+                    <h3>📉 Simulador de Drawdown</h3>
+                    <div class="subtitle">Veja o impacto real de uma sequência de perdas no seu capital.</div>
+                    <div class="input-group">
+                        <label>Capital Inicial (R$)</label>
+                        <input type="number" id="ddCapital" value="10000" step="100" oninput="calcDrawdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Risco por Trade (%)</label>
+                        <input type="number" id="ddRisco" value="2" step="0.1" oninput="calcDrawdown()">
+                    </div>
+                    <div class="input-group">
+                        <label>Número de Perdas Consecutivas</label>
+                        <input type="number" id="ddPerdas" value="5" step="1" min="1" max="30" oninput="calcDrawdown()">
+                    </div>
+                    <div class="result-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                        <div class="result-item">
+                            <div class="result-label">Capital Final</div>
+                            <div class="result-value warn" id="ddCapFinal">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Perda Total (R$)</div>
+                            <div class="result-value loss" id="ddPerdaTotal">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Drawdown %</div>
+                            <div class="result-value warn" id="ddPct">--</div>
+                        </div>
+                    </div>
+                    <div class="draw-bar-container" id="ddBarWrap">
+                        <div class="draw-bar-label"><span>Capital Restante</span><span id="ddBarPct">--</span></div>
+                        <div class="draw-bar-track"><div class="draw-bar-fill safe" id="ddBar" style="width:100%"></div></div>
+                    </div>
+                    <div class="info-box" id="ddAlert" style="margin-top:1.2rem;">
+                        Calcule para ver o impacto real no seu capital.
+                    </div>
+                </div>
+                <div class="calc-explainer">
+                    <h3>Drawdown: o inimigo invisível</h3>
+                    <ul class="explainer-list">
+                        <li><span class="icon">⚠️</span><span>Perder <strong>50% do capital</strong> exige um ganho de <strong>100%</strong> para voltar ao ponto de partida. Não é simetria — é matemática cruel.</span></li>
+                        <li><span class="icon">🔢</span><span>Com 2% de risco por trade, 10 perdas seguidas = 18% de drawdown. Recuperável. Com 10%, são 65%. Catastrófico.</span></li>
+                        <li><span class="icon">🧱</span><span>O drawdown máximo suportável define seu risco por trade. Defina seu limite antes de qualquer trade.</span></li>
+                        <li><span class="icon">🛡️</span><span>Traders profissionais limitam o drawdown máximo a 10–15% do capital. Acima disso, revisão de plano é obrigatória.</span></li>
+                    </ul>
+                    <div class="info-box">
+                        💡 Regra dos 3 stops: Se perder 3 operações seguidas, pare o dia. Não é fraqueza — é proteção do capital para operar amanhã.
+                    </div>
+                </div>
+            </div>
+
+            <!-- JUROS COMPOSTOS -->
+            <div id="tool-juros" class="tool-panel">
+                <div class="calc-card">
+                    <h3>💰 Simulador de Juros Compostos</h3>
+                    <div class="subtitle">Veja o poder do crescimento composto no seu capital de trading.</div>
+                    <div class="input-group">
+                        <label>Capital Inicial (R$)</label>
+                        <input type="number" id="jcCapital" value="10000" step="500" oninput="calcJuros()">
+                    </div>
+                    <div class="input-group">
+                        <label>Rentabilidade Mensal Esperada (%)</label>
+                        <input type="number" id="jcRent" value="5" step="0.5" oninput="calcJuros()">
+                    </div>
+                    <div class="input-group">
+                        <label>Período (meses)</label>
+                        <input type="number" id="jcMeses" value="24" step="1" min="1" max="120" oninput="calcJuros()">
+                    </div>
+                    <div class="input-group">
+                        <label>Aporte Mensal (R$)</label>
+                        <input type="number" id="jcAporte" value="500" step="100" oninput="calcJuros()">
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">Capital Final</div>
+                            <div class="result-value profit" id="jcFinal">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Total Investido</div>
+                            <div class="result-value neutral" id="jcInvestido">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Lucro Total</div>
+                            <div class="result-value profit" id="jcLucro">--</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Multiplicador</div>
+                            <div class="result-value neutral" id="jcMulti">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="calc-explainer">
+                    <h3>A 8ª maravilha do mundo</h3>
+                    <ul class="explainer-list">
+                        <li><span class="icon">📈</span><span>R$ 10.000 a 5% ao mês por <strong>24 meses</strong> = mais de R$ 32.000. Sem depositar mais nada.</span></li>
+                        <li><span class="icon">⏳</span><span>Tempo é o recurso mais valioso do trader. Começar hoje com pouco bate começar amanhã com muito.</span></li>
+                        <li><span class="icon">🎯</span><span>Metas realistas e consistentes superam grandes retornos erráticos. 3% constante > 20% volátil.</span></li>
+                        <li><span class="icon">💡</span><span>Reinvirtam os lucros. Cada trade lucrativo que fica na conta trabalha por você no próximo mês.</span></li>
+                    </ul>
+                    <div class="info-box">
+                        💡 Um trader consistente com 3–5% ao mês transforma R$ 10.000 em mais de R$ 57.000 em 3 anos — sem nunca arriscar mais do que seu plano permite.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="trading-footer">
+        <div class="container">
+            <p style="margin-bottom:0.5rem;">© Hopewaves Trading — Ferramentas educativas. Resultados passados não garantem resultados futuros.</p>
+            <div style="display:flex;justify-content:center;gap:1.2rem;">
+                <a href="../" style="color:var(--text-muted);font-size:0.85rem;">Trading Home</a>
+                <a href="../sinais/" style="color:var(--text-muted);font-size:0.85rem;">Sinais</a>
+                <a href="../day-trade/" style="color:var(--text-muted);font-size:0.85rem;">Day Trade</a>
+                <a href="../swing-trade/" style="color:var(--text-muted);font-size:0.85rem;">Swing Trade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/trading.js"></script>
+    <script>
+        function switchTool(id) {
+            document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tool-' + id).classList.add('active');
+            event.target.classList.add('active');
+            if (id === 'drawdown') calcDrawdown();
+            if (id === 'juros') calcJuros();
+            if (id === 'posicao') calcPosition();
+        }
+
+        function calcPosition() {
+            const form = document.getElementById('calcPosicao');
+            if (!form) return;
+            const capital = parseFloat(form.capital.value) || 0;
+            const risco = parseFloat(form.risco.value) || 1;
+            const entry = parseFloat(form.entry.value) || 0;
+            const sl = parseFloat(form.sl.value) || 0;
+            const tp = parseFloat(form.tp.value) || 0;
+            if (!capital || !entry || !sl) return;
+            const riscoReais = capital * (risco / 100);
+            const pontosRisco = Math.abs(entry - sl);
+            const pontosGain = Math.abs(tp - entry);
+            const lote = pontosRisco > 0 ? (riscoReais / pontosRisco) : 0;
+            const gain = pontosGain * lote;
+            const rr = pontosRisco > 0 ? (pontosGain / pontosRisco).toFixed(2) : '0';
+            const suffix = form.tipo.value === 'forex' ? ' lots' : ' contratos';
+            document.getElementById('posLote').textContent = lote.toFixed(2) + suffix;
+            document.getElementById('posRisco').textContent = 'R$ ' + riscoReais.toFixed(2);
+            document.getElementById('posGain').textContent = 'R$ ' + gain.toFixed(2);
+            document.getElementById('posRR').textContent = rr + ':1';
+        }
+
+        function calcDrawdown() {
+            const capital = parseFloat(document.getElementById('ddCapital').value) || 10000;
+            const risco = parseFloat(document.getElementById('ddRisco').value) || 2;
+            const perdas = parseInt(document.getElementById('ddPerdas').value) || 5;
+            let cap = capital;
+            for (let i = 0; i < perdas; i++) { cap = cap * (1 - risco / 100); }
+            const perdaTotal = capital - cap;
+            const ddPct = ((perdaTotal / capital) * 100).toFixed(2);
+            const remaining = 100 - parseFloat(ddPct);
+            document.getElementById('ddCapFinal').textContent = 'R$ ' + cap.toFixed(0);
+            document.getElementById('ddPerdaTotal').textContent = 'R$ ' + perdaTotal.toFixed(0);
+            document.getElementById('ddPct').textContent = ddPct + '%';
+            document.getElementById('ddBarPct').textContent = remaining.toFixed(1) + '% restante';
+            const bar = document.getElementById('ddBar');
+            bar.style.width = remaining + '%';
+            bar.className = 'draw-bar-fill ' + (remaining >= 85 ? 'safe' : remaining >= 70 ? 'warn' : 'danger');
+            const alert = document.getElementById('ddAlert');
+            if (remaining >= 85) alert.textContent = '✅ Risco saudável. Continue com a mesma gestão.';
+            else if (remaining >= 75) alert.textContent = '⚠️ Drawdown moderado. Considere reduzir o tamanho das posições temporariamente.';
+            else alert.textContent = '🚨 Drawdown crítico! Reduza o risco por trade imediatamente e revise sua estratégia.';
+        }
+
+        function calcJuros() {
+            const capital = parseFloat(document.getElementById('jcCapital').value) || 10000;
+            const rent = parseFloat(document.getElementById('jcRent').value) / 100 || 0.05;
+            const meses = parseInt(document.getElementById('jcMeses').value) || 24;
+            const aporte = parseFloat(document.getElementById('jcAporte').value) || 0;
+            let total = capital;
+            for (let i = 0; i < meses; i++) { total = total * (1 + rent) + aporte; }
+            const investido = capital + aporte * meses;
+            const lucro = total - investido;
+            const multi = (total / capital).toFixed(2);
+            const fmt = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+            document.getElementById('jcFinal').textContent = fmt(total);
+            document.getElementById('jcInvestido').textContent = fmt(investido);
+            document.getElementById('jcLucro').textContent = fmt(lucro);
+            document.getElementById('jcMulti').textContent = multi + 'x';
+        }
+
+        // Init
+        calcPosition();
+        calcDrawdown();
+        calcJuros();
+    </script>
+</body>
+</html>

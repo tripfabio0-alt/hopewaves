@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hopewaves Day Trade | Scalp, Mini Índice e Gestão Intra-Diária</title>
+    <meta name="description" content="Day trade no mini índice (WIN), mini dólar (WDO) e ações. Setups de scalp de alta frequência, horários de volatilidade e gestão cirúrgica de risco intra-diário.">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/trading.css">
+    <style>
+        .session-timeline { display: flex; gap: 0; flex-direction: column; position: relative; }
+        .session-timeline::before {
+            content: '';
+            position: absolute;
+            left: 22px; top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--accent), var(--loss));
+        }
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .timeline-dot {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            position: relative; z-index: 1;
+        }
+        .dot-hot { background: rgba(0,242,160,0.2); border: 2px solid var(--profit); }
+        .dot-warn { background: rgba(255,200,50,0.2); border: 2px solid #ffc832; }
+        .dot-cold { background: rgba(138,43,226,0.2); border: 2px solid var(--accent); }
+        .timeline-content { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.2rem 1.5rem; flex: 1; }
+        .timeline-time { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem; }
+        .timeline-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+        .timeline-desc { font-size: 0.88rem; color: var(--text-muted); }
+
+        .rule-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+        .rule-num { font-family: 'Outfit'; font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; flex-shrink: 0; line-height: 1; }
+        .rule-title { font-weight: 700; margin-bottom: 0.3rem; }
+        .rule-desc { font-size: 0.88rem; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="bg-wrapper">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <div class="ticker-bar">
+        <div class="ticker-track">
+            <div class="ticker-item"><strong>WIN$</strong> <span class="live-value up" data-base="124680" data-pct="false">124.680</span></div>
+            <div class="ticker-item"><strong>WDO$</strong> <span class="live-value down" data-base="5148" data-pct="false">5.148</span></div>
+            <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="127450" data-pct="false">127.450</span></div>
+            <div class="ticker-item"><strong>EUR/USD</strong> <span class="live-value up" data-base="1.0850" data-pct="false">1.0850</span></div>
+            <div class="ticker-item"><strong>BTC/USD</strong> <span class="live-value up" data-base="64230" data-pct="false">64.230</span></div>
+            <div class="ticker-item"><strong>PETR4</strong> <span class="live-value up" data-base="38.42" data-pct="false">38,42</span></div>
+            <div class="ticker-item"><strong>VIX</strong> <span class="live-value down" data-base="13.20" data-pct="false">13,20</span></div>
+        </div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="container nav-content">
+            <a href="../../" class="logo">Hope<span>waves</span></a>
+            <ul class="nav-links">
+                <li><a href="../">Trading</a></li>
+                <li><a href="../ferramentas/">Ferramentas</a></li>
+                <li><a href="../sinais/">Sinais</a></li>
+                <li><a href="../swing-trade/">Swing</a></li>
+                <li><a href="../acoes/">Ações</a></li>
+                <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="trading-hero" style="min-height:70vh;">
+        <div class="container" style="text-align:center;">
+            <div class="hero-live-badge animate-up"><span class="pulse-dot"></span>Mercado aberto agora</div>
+            <h1 class="animate-up" style="font-size:3.8rem;">Day Trade é <span>Velocidade com Método</span></h1>
+            <p class="animate-up delay-1" style="max-width:700px;margin:0 auto 2rem;">Scalp no WIN, WDO e Forex com confluência de price action, volume profile e horários de liquidez. Sem achismo. Só probabilidade.</p>
+            <div class="hero-actions animate-up delay-2" style="justify-content:center;">
+                <a href="../sinais/" class="btn-primary">Ver Setups do Dia</a>
+                <a href="../ferramentas/" class="btn-secondary">Calcular Meu Risco</a>
+            </div>
+            <div class="stats-grid animate-up delay-3" style="margin-top:2.5rem;max-width:700px;margin-left:auto;margin-right:auto;">
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <span class="stat-number counter" data-target="3" data-suffix="–5">0</span>
+                    <div class="stat-label">Setups por Dia</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <span class="stat-number counter" data-target="87" data-suffix="%">0</span>
+                    <div class="stat-label">Acerto Médio Scalp</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <span class="stat-number counter" data-target="12" data-suffix="min">0</span>
+                    <div class="stat-label">Tempo Médio de Trade</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE HORÁRIOS -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Relógio do Trader</div>
+            <h2 class="section-title reveal">Cada minuto tem um <span>propósito</span></h2>
+            <p class="reveal" style="color:var(--text-muted);margin-bottom:2.5rem;">O mercado não é aleatório em horário. Aprenda quando atacar e quando ficar fora.</p>
+            <div class="session-timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot dot-warn">🌅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">09h00 – 09h45 (BRT)</div>
+                        <div class="timeline-title">Abertura: Armadilha dos Amadores</div>
+                        <div class="timeline-desc">Volatilidade caótica. Stops sendo varridos. Observe, mapeie os extremos e aguarde a direção inicial se confirmar. Não opere cegamente.</div>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot dot-hot">🔥</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">09h45 – 11h30 (BRT)</div>
+                        <div class="timeline-title">Janela de Ouro #1 — Alta Liquidez</div>
+                        <div class="timeline-desc">Melhor período do dia. Fluxo institucional entrando. Movimentos direcionais limpos no WIN e WDO. Sua principal janela de operação.</div>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot dot-warn">😴</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">11h30 – 13h00 (BRT)</div>
+                        <div class="timeline-title">Range: Mercado Descansando</div>
+                        <div class="timeline-desc">Volume cai drasticamente. Mercado lateraliza e faz movimentos erráticos. Reduza tamanho ou fique fora. Falsos rompimentos abundam.</div>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot dot-hot">⚡</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">13h00 – 15h30 (BRT)</div>
+                        <div class="timeline-title">Janela de Ouro #2 — NY Abre</div>
+                        <div class="timeline-desc">Sobreposição EUA + Brasil. Fluxo de dólar move o WIN e o WDO simultaneamente. Alta assertividade para traders de confluência macro.</div>
+                    </div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot dot-cold">🌙</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">15h30 – 17h00 (BRT)</div>
+                        <div class="timeline-title">Final: Posições Fechando</div>
+                        <div class="timeline-desc">Movimentos de encerramento de posições. Boa para scalps de reversão. Atenção ao call de fechamento do Ibovespa às 17h55.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REGRAS DE OURO -->
+    <section style="padding: 4rem 0; background: linear-gradient(180deg, transparent, rgba(138,43,226,0.04), transparent);">
+        <div class="container">
+            <div class="section-label">As Leis do Day Trader</div>
+            <h2 class="section-title reveal">Regras que separam <span>os que ficam</span></h2>
+            <div class="market-grid reveal" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1rem;">
+                <div class="rule-card">
+                    <div class="rule-num">01</div>
+                    <div>
+                        <div class="rule-title">Defina o Stop Antes de Entrar</div>
+                        <div class="rule-desc">Nunca entre em uma operação sem saber exatamente onde sai com prejuízo limitado. O stop é sua apólice de seguro.</div>
+                    </div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-num">02</div>
+                    <div>
+                        <div class="rule-title">Máximo de 2% do Capital por Trade</div>
+                        <div class="rule-desc">Nunca arrisque mais que 2% em uma operação. Consistência é feita por quem sobrevive ao longo prazo.</div>
+                    </div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-num">03</div>
+                    <div>
+                        <div class="rule-title">3 Perdas = Fim do Dia</div>
+                        <div class="rule-desc">Se perder 3 operações seguidas, feche o computador. O mercado não vai a lugar nenhum. Você volta amanhã melhor.</div>
+                    </div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-num">04</div>
+                    <div>
+                        <div class="rule-title">Não Opere na Contramão do Trend Maior</div>
+                        <div class="rule-desc">O gráfico de 5min decide a entrada, mas o de 1h decide a direção. Opere sempre com a corrente, nunca contra ela.</div>
+                    </div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-num">05</div>
+                    <div>
+                        <div class="rule-title">Journal é Obrigatório</div>
+                        <div class="rule-desc">Anote cada trade: entrada, saída, motivo, emoção. Quem não mede, não melhora. O padrão dos seus erros está no diário.</div>
+                    </div>
+                </div>
+                <div class="rule-card">
+                    <div class="rule-num">06</div>
+                    <div>
+                        <div class="rule-title">Lucro não Muda as Regras</div>
+                        <div class="rule-desc">Ganhar não é sinal para aumentar risco descontroladamente. O tilt de euforia é tão perigoso quanto o tilt de medo.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SINAIS DO DIA -->
+    <section style="padding: 4rem 0;">
+        <div class="container">
+            <div class="section-label">Setups Intra-Diários</div>
+            <h2 class="section-title reveal">O que estamos <span>operando hoje</span></h2>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-compra">Compra</div>
+                <div>
+                    <div class="signal-pair">WIN$ · M5</div>
+                    <div class="signal-detail">Pullback em POC diário + FVG M15 bullish. Entrada após candle de confirmação. Janela das 10h.</div>
+                </div>
+                <div class="signal-targets"><strong>124.680</strong>SL: 124.400 · TP: 125.200</div>
+            </div>
+            <div class="signal-card reveal">
+                <div class="signal-badge badge-venda">Venda</div>
+                <div>
+                    <div class="signal-pair">WDO$ · M15</div>
+                    <div class="signal-detail">Topo duplo no nível 5.160. Dólar cede após abertura EUA positiva. Alvo no suporte de range asiático.</div>
+                </div>
+                <div class="signal-targets"><strong>5.148</strong>SL: 5.162 · TP: 5.120</div>
+            </div>
+            <div style="text-align:center;margin-top:1.2rem;">
+                <a href="../sinais/" class="btn-primary">Ver Todos os Setups</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="trading-footer">
+        <div class="container">
+            <p style="margin-bottom:0.5rem;">© Hopewaves Trading — Day Trade envolve risco de perda. Opere com gestão sempre.</p>
+            <div style="display:flex;justify-content:center;gap:1.2rem;">
+                <a href="../" style="color:var(--text-muted);font-size:0.85rem;">Trading Home</a>
+                <a href="../ferramentas/" style="color:var(--text-muted);font-size:0.85rem;">Ferramentas</a>
+                <a href="../swing-trade/" style="color:var(--text-muted);font-size:0.85rem;">Swing Trade</a>
+                <a href="../sinais/" style="color:var(--text-muted);font-size:0.85rem;">Sinais</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/trading.js"></script>
+</body>
+</html>

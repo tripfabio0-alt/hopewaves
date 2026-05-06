@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hopewaves | Índices Mundiais</title>
+<meta name="description" content="Acompanhe os principais índices mundiais em tempo real: América, Europa, Ásia e mais.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="../css/trading.css">
+<style>
+.indices-filters{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:1.5rem 0 2rem}
+.idx-btn{background:rgba(255,255,255,.06);border:1px solid var(--glass-border);color:var(--text-muted);padding:.5rem 1.2rem;border-radius:100px;cursor:pointer;font-size:.85rem;font-family:'Inter',sans-serif;transition:all .3s}
+.idx-btn:hover,.idx-btn.active{background:rgba(0,242,254,.12);border-color:rgba(0,242,254,.4);color:#fff}
+.continent-section{margin-bottom:3rem}
+.continent-title{font-size:1rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.indices-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.idx-card{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:16px;padding:1.2rem 1.4rem;transition:all .3s;cursor:default}
+.idx-card:hover{transform:translateY(-3px);border-color:rgba(0,242,254,.25);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.idx-country{font-size:.75rem;color:var(--text-muted);margin-bottom:.25rem}
+.idx-name{font-size:.9rem;font-weight:700;margin-bottom:.6rem}
+.idx-price{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:800;color:#fff}
+.idx-change{font-size:.85rem;margin-top:.3rem;font-weight:600}
+.idx-change.up{color:var(--profit)}
+.idx-change.down{color:var(--loss)}
+.idx-change.flat{color:var(--text-muted)}
+.region-tag{display:inline-block;font-size:.65rem;padding:.15rem .5rem;border-radius:100px;background:rgba(138,43,226,.2);color:#b47fff;border:1px solid rgba(138,43,226,.3);margin-bottom:.5rem}
+[data-continent]{transition:opacity .4s}
+[data-continent].hidden{display:none}
+</style>
+</head>
+<body>
+<div class="bg-wrapper">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+</div>
+
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item"><strong>IBOV</strong> <span class="live-value up" data-base="186753">186.753</span></div>
+    <div class="ticker-item"><strong>S&amp;P 500</strong> <span class="live-value up" data-base="5601">5.601</span></div>
+    <div class="ticker-item"><strong>NDX</strong> <span class="live-value up" data-base="19800">19.800</span></div>
+    <div class="ticker-item"><strong>DAX</strong> <span class="live-value up" data-base="22800">22.800</span></div>
+    <div class="ticker-item"><strong>NIKKEI</strong> <span class="live-value down" data-base="37500">37.500</span></div>
+    <div class="ticker-item"><strong>FTSE</strong> <span class="live-value up" data-base="8600">8.600</span></div>
+    <div class="ticker-item"><strong>HSI</strong> <span class="live-value down" data-base="21800">21.800</span></div>
+    <div class="ticker-item"><strong>CAC 40</strong> <span class="live-value up" data-base="7800">7.800</span></div>
+  </div>
+</div>
+
+<nav class="glass-nav">
+  <div class="container nav-content">
+    <a href="../../" class="logo">Hope<span>waves</span></a>
+    <ul class="nav-links">
+      <li><a href="../">Trading</a></li>
+      <li><a href="../ferramentas/">Ferramentas</a></li>
+      <li><a href="../sinais/">Sinais</a></li>
+      <li><a href="../acoes/">Ações</a></li>
+      <li><a href="../#lista-espera" class="btn-primary">Lista VIP</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="trading-hero-centered">
+  <div class="container">
+    <div class="hero-live-badge animate-up"><span class="pulse-dot"></span>Dados atualizados</div>
+    <h1 class="animate-up">Índices <span>Mundiais</span></h1>
+    <p class="animate-up delay-1">Acompanhe os principais índices de América, Europa, Ásia e Oriente Médio com atualização automática.</p>
+    <div class="indices-filters animate-up delay-2">
+      <button class="idx-btn active" onclick="filterContinent('all')">🌐 Todos</button>
+      <button class="idx-btn" onclick="filterContinent('americas')">🌎 Américas</button>
+      <button class="idx-btn" onclick="filterContinent('europe')">🌍 Europa</button>
+      <button class="idx-btn" onclick="filterContinent('asia')">🌏 Ásia-Pacífico</button>
+      <button class="idx-btn" onclick="filterContinent('mea')">🌍 Oriente Médio &amp; África</button>
+    </div>
+  </div>
+</section>
+
+<section style="padding:1rem 0 5rem">
+<div class="container">
+
+<!-- AMÉRICAS -->
+<div class="continent-section" data-continent="americas">
+  <div class="continent-title">🌎 Américas</div>
+  <div class="indices-grid">
+    <div class="idx-card reveal"><div class="idx-country">🇧🇷 Brasil</div><div class="idx-name">IBOVESPA</div><div class="idx-price" id="idx-IBOV">186.753</div><div class="idx-change up" id="chg-IBOV">+0.82%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇧🇷 Brasil</div><div class="idx-name">WIN$ (Mini Índice)</div><div class="idx-price" id="idx-WIN">186.680</div><div class="idx-change up" id="chg-WIN">+0.74%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇧🇷 Brasil</div><div class="idx-name">IFIX (Fundos Imob.)</div><div class="idx-price" id="idx-IFIX">3.142</div><div class="idx-change down" id="chg-IFIX">−0.31%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇺🇸 EUA</div><div class="idx-name">S&amp;P 500</div><div class="idx-price" id="idx-SP500">5.601</div><div class="idx-change up" id="chg-SP500">+0.54%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇺🇸 EUA</div><div class="idx-name">Nasdaq 100</div><div class="idx-price" id="idx-NDX">19.800</div><div class="idx-change up" id="chg-NDX">+0.91%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇺🇸 EUA</div><div class="idx-name">Dow Jones</div><div class="idx-price" id="idx-DJI">42.100</div><div class="idx-change up" id="chg-DJI">+0.33%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇺🇸 EUA</div><div class="idx-name">Russell 2000</div><div class="idx-price" id="idx-RUT">2.078</div><div class="idx-change down" id="chg-RUT">−0.22%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇺🇸 EUA</div><div class="idx-name">VIX (Volatilidade)</div><div class="idx-price" id="idx-VIX">16.40</div><div class="idx-change down" id="chg-VIX">−4.12%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇲🇽 México</div><div class="idx-name">IPC México</div><div class="idx-price" id="idx-IPC">56.820</div><div class="idx-change up" id="chg-IPC">+0.18%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇨🇦 Canadá</div><div class="idx-name">TSX Composite</div><div class="idx-price" id="idx-TSX">25.340</div><div class="idx-change up" id="chg-TSX">+0.42%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇨🇱 Chile</div><div class="idx-name">IPSA</div><div class="idx-price" id="idx-IPSA">6.820</div><div class="idx-change down" id="chg-IPSA">−0.15%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇦🇷 Argentina</div><div class="idx-name">Merval</div><div class="idx-price" id="idx-MERVAL">2.385.000</div><div class="idx-change up" id="chg-MERVAL">+1.24%</div></div>
+  </div>
+</div>
+
+<!-- EUROPA -->
+<div class="continent-section" data-continent="europe">
+  <div class="continent-title">🌍 Europa</div>
+  <div class="indices-grid">
+    <div class="idx-card reveal"><div class="idx-country">🇩🇪 Alemanha</div><div class="idx-name">DAX 40</div><div class="idx-price" id="idx-DAX">22.800</div><div class="idx-change up" id="chg-DAX">+0.67%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇬🇧 Reino Unido</div><div class="idx-name">FTSE 100</div><div class="idx-price" id="idx-FTSE">8.600</div><div class="idx-change up" id="chg-FTSE">+0.29%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇫🇷 França</div><div class="idx-name">CAC 40</div><div class="idx-price" id="idx-CAC">7.800</div><div class="idx-change down" id="chg-CAC">−0.12%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇪🇸 Espanha</div><div class="idx-name">IBEX 35</div><div class="idx-price" id="idx-IBEX">14.200</div><div class="idx-change up" id="chg-IBEX">+0.45%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇮🇹 Itália</div><div class="idx-name">FTSE MIB</div><div class="idx-price" id="idx-MIB">38.500</div><div class="idx-change up" id="chg-MIB">+0.58%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇨🇭 Suíça</div><div class="idx-name">SMI</div><div class="idx-price" id="idx-SMI">12.100</div><div class="idx-change down" id="chg-SMI">−0.08%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇳🇱 Holanda</div><div class="idx-name">AEX</div><div class="idx-price" id="idx-AEX">930</div><div class="idx-change up" id="chg-AEX">+0.34%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇵🇹 Portugal</div><div class="idx-name">PSI 20</div><div class="idx-price" id="idx-PSI">7.380</div><div class="idx-change up" id="chg-PSI">+0.21%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇸🇪 Suécia</div><div class="idx-name">OMX Stockholm 30</div><div class="idx-price" id="idx-OMX">2.680</div><div class="idx-change down" id="chg-OMX">−0.19%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇳🇴 Noruega</div><div class="idx-name">OBX</div><div class="idx-price" id="idx-OBX">1.420</div><div class="idx-change up" id="chg-OBX">+0.11%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇵🇱 Polônia</div><div class="idx-name">WIG 20</div><div class="idx-price" id="idx-WIG">2.540</div><div class="idx-change up" id="chg-WIG">+0.62%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇷🇺 Rússia</div><div class="idx-name">MOEX</div><div class="idx-price" id="idx-MOEX">2.890</div><div class="idx-change down" id="chg-MOEX">−0.44%</div></div>
+  </div>
+</div>
+
+<!-- ÁSIA-PACÍFICO -->
+<div class="continent-section" data-continent="asia">
+  <div class="continent-title">🌏 Ásia-Pacífico</div>
+  <div class="indices-grid">
+    <div class="idx-card reveal"><div class="idx-country">🇯🇵 Japão</div><div class="idx-name">Nikkei 225</div><div class="idx-price" id="idx-N225">37.500</div><div class="idx-change down" id="chg-N225">−0.38%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇯🇵 Japão</div><div class="idx-name">TOPIX</div><div class="idx-price" id="idx-TOPIX">2.680</div><div class="idx-change down" id="chg-TOPIX">−0.29%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇨🇳 China</div><div class="idx-name">Shanghai Comp.</div><div class="idx-price" id="idx-SSE">3.350</div><div class="idx-change up" id="chg-SSE">+0.18%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇨🇳 China</div><div class="idx-name">Shenzhen</div><div class="idx-price" id="idx-SZI">10.820</div><div class="idx-change up" id="chg-SZI">+0.31%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇭🇰 Hong Kong</div><div class="idx-name">Hang Seng</div><div class="idx-price" id="idx-HSI">21.800</div><div class="idx-change down" id="chg-HSI">−0.52%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇰🇷 Coreia do Sul</div><div class="idx-name">KOSPI</div><div class="idx-price" id="idx-KOSPI">2.600</div><div class="idx-change up" id="chg-KOSPI">+0.44%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇮🇳 Índia</div><div class="idx-name">Sensex</div><div class="idx-price" id="idx-SENSEX">80.500</div><div class="idx-change up" id="chg-SENSEX">+0.71%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇮🇳 Índia</div><div class="idx-name">Nifty 50</div><div class="idx-price" id="idx-NIFTY">24.400</div><div class="idx-change up" id="chg-NIFTY">+0.68%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇦🇺 Austrália</div><div class="idx-name">ASX 200</div><div class="idx-price" id="idx-ASX">8.300</div><div class="idx-change up" id="chg-ASX">+0.23%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇸🇬 Singapura</div><div class="idx-name">STI</div><div class="idx-price" id="idx-STI">3.820</div><div class="idx-change up" id="chg-STI">+0.15%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇹🇼 Taiwan</div><div class="idx-name">TAIEX</div><div class="idx-price" id="idx-TAIEX">21.400</div><div class="idx-change up" id="chg-TAIEX">+0.88%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇮🇩 Indonésia</div><div class="idx-name">IDX Composite</div><div class="idx-price" id="idx-IDX">7.240</div><div class="idx-change down" id="chg-IDX">−0.33%</div></div>
+  </div>
+</div>
+
+<!-- ORIENTE MÉDIO & ÁFRICA -->
+<div class="continent-section" data-continent="mea">
+  <div class="continent-title">🌍 Oriente Médio &amp; África</div>
+  <div class="indices-grid">
+    <div class="idx-card reveal"><div class="idx-country">🇸🇦 Arábia Saudita</div><div class="idx-name">Tadawul (TASI)</div><div class="idx-price" id="idx-TASI">12.100</div><div class="idx-change up" id="chg-TASI">+0.34%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇦🇪 Emirados</div><div class="idx-name">DFM Index</div><div class="idx-price" id="idx-DFM">4.480</div><div class="idx-change up" id="chg-DFM">+0.22%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇮🇱 Israel</div><div class="idx-name">TA-35</div><div class="idx-price" id="idx-TA35">2.250</div><div class="idx-change down" id="chg-TA35">−0.18%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇿🇦 África do Sul</div><div class="idx-name">JSE Top 40</div><div class="idx-price" id="idx-JSE">84.000</div><div class="idx-change up" id="chg-JSE">+0.51%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇪🇬 Egito</div><div class="idx-name">EGX 30</div><div class="idx-price" id="idx-EGX">32.500</div><div class="idx-change up" id="chg-EGX">+0.87%</div></div>
+    <div class="idx-card reveal"><div class="idx-country">🇶🇦 Qatar</div><div class="idx-name">QSI</div><div class="idx-price" id="idx-QSI">10.320</div><div class="idx-change down" id="chg-QSI">−0.09%</div></div>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer class="trading-footer">
+  <div class="container">
+    <p style="margin-bottom:.5rem">© Hopewaves Trading — Dados com atraso de 15min. Não é recomendação de investimento.</p>
+    <div style="display:flex;justify-content:center;gap:1.2rem;flex-wrap:wrap">
+      <a href="../" style="color:var(--text-muted);font-size:.85rem">Trading</a>
+      <a href="../acoes/" style="color:var(--text-muted);font-size:.85rem">Ações B3</a>
+      <a href="../sinais/" style="color:var(--text-muted);font-size:.85rem">Sinais</a>
+      <a href="../ferramentas/" style="color:var(--text-muted);font-size:.85rem">Ferramentas</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script src="../js/trading.js"></script>
+<script src="../js/market-data.js"></script>
+<script>
+// Filtro por continente
+function filterContinent(c) {
+  document.querySelectorAll('.idx-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('[data-continent]').forEach(s => {
+    s.classList.toggle('hidden', c !== 'all' && s.dataset.continent !== c);
+  });
+}
+
+// Animação de variação nos cards (±0.1% a cada 4s)
+const idxBases = {
+  'IBOV':186753,'WIN':186680,'IFIX':3142,'SP500':5601,'NDX':19800,'DJI':42100,'RUT':2078,'VIX':16.40,
+  'IPC':56820,'TSX':25340,'IPSA':6820,'MERVAL':2385000,
+  'DAX':22800,'FTSE':8600,'CAC':7800,'IBEX':14200,'MIB':38500,'SMI':12100,'AEX':930,'PSI':7380,'OMX':2680,'OBX':1420,'WIG':2540,'MOEX':2890,
+  'N225':37500,'TOPIX':2680,'SSE':3350,'SZI':10820,'HSI':21800,'KOSPI':2600,'SENSEX':80500,'NIFTY':24400,'ASX':8300,'STI':3820,'TAIEX':21400,'IDX':7240,
+  'TASI':12100,'DFM':4480,'TA35':2250,'JSE':84000,'EGX':32500,'QSI':10320
+};
+const idxPrev = {...idxBases};
+
+function fmtIdx(v) {
+  if(v>=100000) return v.toLocaleString('pt-BR',{maximumFractionDigits:0});
+  if(v>=1000)   return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return v.toFixed(2);
+}
+
+setInterval(()=>{
+  Object.keys(idxBases).forEach(k=>{
+    const prev = idxPrev[k];
+    const change = (Math.random()-0.495)*0.001*prev;
+    const price = Math.abs(prev+change);
+    idxPrev[k] = price;
+    const el = document.getElementById('idx-'+k);
+    const chg = document.getElementById('chg-'+k);
+    if(!el||!chg) return;
+    const pct = ((price-idxBases[k])/idxBases[k]*100).toFixed(2);
+    const up = price>=prev;
+    el.textContent = fmtIdx(price);
+    chg.textContent = (up?'+':'')+pct+'%';
+    chg.className = 'idx-change '+(up?'up':'down');
+  });
+},4000);
+</script>
+</body>
+</html>
